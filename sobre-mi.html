@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre mí • Carlota Díaz</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'DM Sans',sans-serif;
+    background:#ffffff;
+    color:#000;
+}
+
+.font-display{
+    font-family:'Space Grotesk',sans-serif;
+}
+
+.nav-link{
+    padding:8px 16px;
+    border-radius:9999px;
+    transition:all .3s ease;
+}
+
+.nav-link:hover{
+    background:#ff32fd;
+    color:#fff;
+}
+
+.contact-link{
+    display:inline-block;
+    padding:4px 10px;
+    transition:all .3s ease;
+}
+
+.contact-link:hover{
+    background:#ff32fd;
+    color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-100 z-50">
+    <div class="max-w-7xl mx-auto px-8">
+        <div class="flex justify-between items-center py-4">
+
+            <div class="font-display text-lg font-semibold">
+                <a href="index.html">CD</a>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm font-medium">
+                <a href="index.html" class="nav-link">
+                    Inicio
+                </a>
+                <a href="proyectos.html" class="nav-link">
+                    Proyectos
+                </a>
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<section class="min-h-screen flex items-center justify-center pt-32">
+    <div class="max-w-6xl mx-auto px-8 grid md:grid-cols-2 gap-24 items-center">
+
+        <!-- LEFT -->
+        <div class="space-y-10">
+
+            <h1 class="font-display text-xl md:text-2xl font-semibold leading-tight">
+                Sobre<br>
+                <span style="color:#ff32fd;">mí</span>
+            </h1>
+
+            <div class="space-y-3 text-base leading-snug">
+                <p>
+                    He trabajado para marcas como Rexona, Licor 43, Axe y Bayern.
+                </p>
+
+                <p>
+                    Actualmente exploro el crafting con IA como parte del proceso creativo.
+                </p>
+
+                <p>
+                    Me interesan las ideas bien pensadas y mejor ejecutadas.
+                </p>
+            </div>
+
+            <div class="w-10 h-px bg-black"></div>
+
+            <div class="space-y-6">
+
+                <h2 class="font-display text-xl md:text-2xl font-semibold leading-tight">
+                    ¿Tienes algo en mente?<br>
+                    <span style="color:#ff32fd;">Hablemos.</span>
+                </h2>
+
+                <div class="space-y-4 text-sm">
+                    <div>
+                        <a href="mailto:carlota.diaz.pilas@gmail.com" class="contact-link">
+                            carlota.diaz.pilas@gmail.com
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="https://www.linkedin.com/in/carlota-d%C3%ADaz-pilas-168a85235/" target="_blank" class="contact-link">
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+            <span class="text-gray-400 text-sm">Tu foto aquí</span>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>

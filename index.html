@@ -8,9 +8,10 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+
 body{
     font-family:'DM Sans',sans-serif;
     background:#ffffff;
@@ -21,24 +22,54 @@ body{
     font-family:'Space Grotesk',sans-serif;
 }
 
+/* tarjetas base */
 .card{
     background:#f4f4f4;
-    padding:26px;
+    padding:22px;
     border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
 }
 
+/* nombre */
+.card-name{
+    background:#f4f4f4;
+    padding:18px 22px;
+    border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* botones */
+.card-buttons{
+    background:#f4f4f4;
+    padding:22px;
+    border-radius:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+}
+
+/* botones estilo referencia */
 .pill{
-    border:1px solid #000;
-    padding:10px 20px;
+    background:#ffffff;
+    padding:10px 18px;
     border-radius:9999px;
-    transition:all .3s ease;
+    transition:all .25s ease;
 }
 
 .pill:hover{
     background:#ff32fd;
     color:#fff;
-    border-color:#ff32fd;
 }
+
 </style>
 </head>
 
@@ -49,102 +80,149 @@ body{
     <!-- LEFT COLUMN -->
     <div class="w-full md:w-[28%] sticky top-10 self-start space-y-6">
 
+
         <!-- NAME -->
-        <div class="card">
-            <h1 class="font-display text-3xl font-bold leading-tight">
-                Carlota<br>
-                <span style="color:#ff32fd;">Díaz</span>
+        <div class="card-name">
+
+            <h1 class="font-display font-semibold tracking-tight text-center"
+                style="font-size:42px; line-height:1.05;">
+
+                Carlota <span style="color:#ff32fd;">Díaz</span>
+
             </h1>
+
         </div>
+
 
         <!-- TEXT -->
         <div class="card text-sm text-gray-700 leading-relaxed">
-            Directora de arte especializada en campañas.<br><br>
-            Desarrollo ideas desde el concepto hasta la ejecución visual, cuidando cada detalle.<br><br>
-            Actualmente en Madrid.
+
+            <div>
+
+                Directora de arte especializada en campañas.<br>
+                Desarrollo ideas desde el concepto hasta la ejecución visual, cuidando cada detalle.<br>
+                Actualmente en Madrid.
+
+            </div>
+
         </div>
 
+
         <!-- BUTTONS -->
-        <div class="card flex gap-4">
+        <div class="card-buttons">
+
             <a href="proyectos.html" class="pill text-sm font-medium">
                 Proyectos
             </a>
+
             <a href="sobre-mi.html" class="pill text-sm font-medium">
                 Sobre mí
             </a>
+
         </div>
+
 
         <!-- CLOCK -->
         <div class="card">
-            <div class="font-display text-3xl tracking-tight" id="clock">
+
+            <div class="font-display tracking-tight"
+                 style="font-size:32px;"
+                 id="clock">
+
                 <span id="hours">--</span>:<span id="minutes">--</span>:<span id="seconds" style="color:#ff32fd;">--</span>
                 <span id="ampm">--</span> / Madrid
+
             </div>
+
         </div>
 
+
     </div>
+
+
 
     <!-- RIGHT COLUMN -->
     <div class="w-full md:w-[72%] space-y-8">
 
-        <!-- Row 1 -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
             <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-                <img src="https://images.unsplash.com/photo-1561070791-2526d30992b1?w=1000" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1561070791-2526d30992b1?w=1000"
+                class="w-full h-full object-cover">
             </div>
+
             <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-                <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=1000" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=1000"
+                class="w-full h-full object-cover">
             </div>
+
         </div>
 
-        <!-- Row 2 full width -->
+
         <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-gray-200">
-            <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=1400" class="w-full h-full object-cover">
+
+            <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=1400"
+            class="w-full h-full object-cover">
+
         </div>
 
-        <!-- Row 3 -->
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
             <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b0bfc?w=1000" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b0bfc?w=1000"
+                class="w-full h-full object-cover">
             </div>
+
             <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-                <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1000" class="w-full h-full object-cover">
+                <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1000"
+                class="w-full h-full object-cover">
             </div>
+
         </div>
+
 
     </div>
 
 </div>
 
+
 <script>
-function updateClock() {
+
+function updateClock(){
+
     const now = new Date();
 
     const options = {
-        timeZone: 'Europe/Madrid',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
+        timeZone:'Europe/Madrid',
+        hour:'2-digit',
+        minute:'2-digit',
+        second:'2-digit',
+        hour12:true
     };
 
-    const parts = new Intl.DateTimeFormat('en-US', options)
+    const parts = new Intl.DateTimeFormat('en-US',options)
         .formatToParts(now);
 
-    const hours = parts.find(p => p.type === 'hour').value;
-    const minutes = parts.find(p => p.type === 'minute').value;
-    const seconds = parts.find(p => p.type === 'second').value;
-    const ampm = parts.find(p => p.type === 'dayPeriod').value;
+    document.getElementById('hours').textContent =
+        parts.find(p=>p.type==='hour').value;
 
-    document.getElementById('hours').textContent = hours;
-    document.getElementById('minutes').textContent = minutes;
-    document.getElementById('seconds').textContent = seconds;
-    document.getElementById('ampm').textContent = " " + ampm;
+    document.getElementById('minutes').textContent =
+        parts.find(p=>p.type==='minute').value;
+
+    document.getElementById('seconds').textContent =
+        parts.find(p=>p.type==='second').value;
+
+    document.getElementById('ampm').textContent =
+        " "+parts.find(p=>p.type==='dayPeriod').value;
+
 }
 
 setInterval(updateClock,1000);
 updateClock();
+
 </script>
 
 </body>
-</html> 
+</html>

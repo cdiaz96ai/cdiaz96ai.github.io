@@ -7,7 +7,6 @@
 
 <title>Carlota Díaz</title>
 
-<!-- FAVICON -->
 <link rel="icon" type="image/png" href="favicon.png">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -21,6 +20,11 @@ body{
     font-family:'DM Sans',sans-serif;
     background:#ffffff;
     color:#000;
+    cursor:none;
+}
+
+a{
+    cursor:none !important;
 }
 
 .font-display{
@@ -45,44 +49,49 @@ body{
     color:white;
 }
 
+/* ===== CURSOR ===== */
+
+.cursor{
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#ff32fd; /* rosa base */
+    position:fixed;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    z-index:9999;
+    transition:background .15s ease;
+}
+
+.cursor.black{
+    background:#000;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<!-- MAIN CONTAINER -->
 <div class="flex min-h-screen gap-4 px-8 pt-3 pb-8">
 
-
-<!-- LEFT COLUMN -->
 <div class="w-full md:w-[28%] sticky top-6 self-start space-y-4">
 
-
-<!-- NAME -->
 <div class="card flex justify-center items-center">
 
 <h1 class="font-display text-4xl font-bold text-center tracking-tight">
-
 Carlota
 <span style="color:#ff32fd;"> Díaz</span>
-
 </h1>
 
 </div>
 
-
-<!-- TEXT -->
 <div class="card text-sm text-gray-700 leading-relaxed text-center">
-
 Directora de arte especializada en campañas.<br>
 Desarrollo ideas desde el concepto hasta la ejecución visual, cuidando cada detalle.<br>
 Actualmente en Madrid.
-
 </div>
 
-
-<!-- BUTTONS -->
 <div class="card flex justify-center gap-3">
 
 <a href="proyectos.html" class="pill text-sm font-medium">
@@ -95,8 +104,6 @@ Sobre mí
 
 </div>
 
-
-<!-- CLOCK -->
 <div class="card flex justify-center">
 
 <div class="font-display text-3xl tracking-tight">
@@ -108,70 +115,52 @@ Sobre mí
 
 </div>
 
-
 </div>
 
-
-<!-- RIGHT COLUMN -->
 <div class="w-full md:w-[72%] space-y-4">
 
-
-<!-- ROW 1 -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-
 <img src="https://images.unsplash.com/photo-1561070791-2526d30992b1?w=1000"
 class="w-full h-full object-cover">
-
 </div>
 
 <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-
 <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?w=1000"
 class="w-full h-full object-cover">
-
 </div>
 
 </div>
 
-
-<!-- ROW 2 -->
 <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-gray-200">
-
 <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=1400"
 class="w-full h-full object-cover">
-
 </div>
 
-
-<!-- ROW 3 -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
 <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-
 <img src="https://images.unsplash.com/photo-1600880292203-757bb62b0bfc?w=1000"
 class="w-full h-full object-cover">
-
 </div>
 
 <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gray-200">
-
 <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1000"
 class="w-full h-full object-cover">
+</div>
+
+</div>
 
 </div>
 
 </div>
 
-
-</div>
-
-
-</div>
-
+<div class="cursor" id="cursor"></div>
 
 <script>
+
+/* ===== RELOJ ===== */
 
 function updateClock(){
 
@@ -202,11 +191,40 @@ document.getElementById('ampm').textContent =
 }
 
 setInterval(updateClock,1000);
-
 updateClock();
 
-</script>
+/* ===== CURSOR MOVIMIENTO Y COLOR ===== */
 
+const cursor = document.getElementById("cursor");
+
+document.addEventListener("mousemove", e=>{
+
+    const x = e.clientX;
+    const y = e.clientY;
+
+    cursor.style.left = x + "px";
+    cursor.style.top  = y + "px";
+
+    const el = document.elementFromPoint(x,y);
+    if(!el) return;
+
+    // Si está dentro de un botón pill → cursor negro
+    if(el.closest(".pill")){
+        cursor.classList.add("black");
+        return;
+    }
+
+    // Si el texto es rosa → cursor negro
+    const style = window.getComputedStyle(el);
+    if(style.color === "rgb(255, 50, 253)"){
+        cursor.classList.add("black");
+    } else {
+        cursor.classList.remove("black");
+    }
+
+});
+
+</script>
 
 </body>
 </html>

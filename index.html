@@ -179,7 +179,7 @@ document.getElementById('ampm').textContent =
 setInterval(updateClock,1000);
 updateClock();
 
-/* ===== CURSOR CON LAG MÁS LENTO ===== */
+/* ===== CURSOR LAG EQUILIBRADO ===== */
 
 const cursor = document.getElementById("cursor");
 
@@ -189,7 +189,7 @@ let mouseY = window.innerHeight / 2;
 let currentX = mouseX;
 let currentY = mouseY;
 
-const speed = 0.05; // MÁS LENTO (antes era 0.08)
+const speed = 0.065; // punto medio ideal
 
 document.addEventListener("mousemove", e=>{
     mouseX = e.clientX;

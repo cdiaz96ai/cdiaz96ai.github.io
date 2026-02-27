@@ -55,7 +55,7 @@ a{
     width:16px;
     height:16px;
     border-radius:50%;
-    background:#ff32fd; /* rosa base */
+    background:#ff32fd;
     position:fixed;
     pointer-events:none;
     transform:translate(-50%,-50%);
@@ -78,12 +78,10 @@ a{
 <div class="w-full md:w-[28%] sticky top-6 self-start space-y-4">
 
 <div class="card flex justify-center items-center">
-
 <h1 class="font-display text-4xl font-bold text-center tracking-tight">
 Carlota
 <span style="color:#ff32fd;"> Díaz</span>
 </h1>
-
 </div>
 
 <div class="card text-sm text-gray-700 leading-relaxed text-center">
@@ -93,26 +91,19 @@ Actualmente en Madrid.
 </div>
 
 <div class="card flex justify-center gap-3">
-
 <a href="proyectos.html" class="pill text-sm font-medium">
 Proyectos
 </a>
-
 <a href="sobre-mi.html" class="pill text-sm font-medium">
 Sobre mí
 </a>
-
 </div>
 
 <div class="card flex justify-center">
-
 <div class="font-display text-3xl tracking-tight">
-
 <span id="hours">--</span>:<span id="minutes">--</span>:<span id="seconds" style="color:#ff32fd;">--</span>
 <span id="ampm">--</span> / Madrid
-
 </div>
-
 </div>
 
 </div>
@@ -163,9 +154,7 @@ class="w-full h-full object-cover">
 /* ===== RELOJ ===== */
 
 function updateClock(){
-
 const now = new Date();
-
 const options = {
 timeZone:'Europe/Madrid',
 hour:'2-digit',
@@ -173,7 +162,6 @@ minute:'2-digit',
 second:'2-digit',
 hour12:true
 };
-
 const parts = new Intl.DateTimeFormat('en-US',options).formatToParts(now);
 
 document.getElementById('hours').textContent =
@@ -187,42 +175,54 @@ parts.find(p=>p.type==='second').value;
 
 document.getElementById('ampm').textContent =
 " "+parts.find(p=>p.type==='dayPeriod').value;
-
 }
 
 setInterval(updateClock,1000);
 updateClock();
 
-/* ===== CURSOR MOVIMIENTO Y COLOR ===== */
+/* ===== CURSOR SUAVE ===== */
 
 const cursor = document.getElementById("cursor");
 
+let mouseX = 0;
+let mouseY = 0;
+
+let currentX = 0;
+let currentY = 0;
+
+const speed = 0.15;
+
 document.addEventListener("mousemove", e=>{
-
-    const x = e.clientX;
-    const y = e.clientY;
-
-    cursor.style.left = x + "px";
-    cursor.style.top  = y + "px";
-
-    const el = document.elementFromPoint(x,y);
-    if(!el) return;
-
-    // Si está dentro de un botón pill → cursor negro
-    if(el.closest(".pill")){
-        cursor.classList.add("black");
-        return;
-    }
-
-    // Si el texto es rosa → cursor negro
-    const style = window.getComputedStyle(el);
-    if(style.color === "rgb(255, 50, 253)"){
-        cursor.classList.add("black");
-    } else {
-        cursor.classList.remove("black");
-    }
-
+    mouseX = e.clientX;
+    mouseY = e.clientY;
 });
+
+function animate(){
+    currentX += (mouseX - currentX) * speed;
+    currentY += (mouseY - currentY) * speed;
+
+    cursor.style.left = currentX + "px";
+    cursor.style.top  = currentY + "px";
+
+    const el = document.elementFromPoint(mouseX, mouseY);
+
+    if(el){
+        if(el.closest(".pill")){
+            cursor.classList.add("black");
+        } else {
+            const style = window.getComputedStyle(el);
+            if(style.color === "rgb(255, 50, 253)"){
+                cursor.classList.add("black");
+            } else {
+                cursor.classList.remove("black");
+            }
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
 
 </script>
 

@@ -48,7 +48,7 @@ body { scroll-behavior: smooth; }
   position: relative;
   z-index: 20;
   background: #ffffff;
-  transform: translateY(100vh);
+  transform: translateY(30vh); /* 🔥 empieza casi visible */
   padding: 120px 40px;
   will-change: transform;
 }
@@ -103,7 +103,7 @@ body { scroll-behavior: smooth; }
 const hero = document.querySelector("#hero");
 const work = document.querySelector("#work");
 
-
+// cursor
 const images = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
@@ -144,7 +144,7 @@ hero.addEventListener("mousemove", (e) => {
   currentIndex = (currentIndex + 1) % images.length;
 });
 
-
+// scroll suave
 let targetScroll = 0;
 let currentScroll = 0;
 
@@ -156,14 +156,13 @@ function animate() {
 
   currentScroll += (targetScroll - currentScroll) * 0.08;
 
-  const start = 0;                
-  const end = window.innerHeight * 0.6; 
-
-  let progress = (currentScroll - start) / (end - start);
-  progress = Math.min(Math.max(progress, 0), 1);
+  // 🔥 rango corto y directo
+  const progress = Math.min(currentScroll / (window.innerHeight * 0.4), 1);
 
   hero.style.filter = `blur(${progress * 20}px)`;
-  work.style.transform = `translateY(${100 - progress * 100}vh)`;
+
+  // 🔥 movimiento corto → aparece rápido
+  work.style.transform = `translateY(${30 - progress * 30}vh)`;
 
   requestAnimationFrame(animate);
 }

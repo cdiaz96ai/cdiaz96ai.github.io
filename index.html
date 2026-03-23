@@ -21,7 +21,6 @@ body { scroll-behavior: smooth; }
   .text-display-xl { font-size: 4rem; }
 }
 
-/* cursor */
 .cursor-image {
   position: absolute;
   width: 150px;
@@ -33,20 +32,18 @@ body { scroll-behavior: smooth; }
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-/* hero */
 #hero {
   position: sticky;
   top: 0;
   height: 100vh;
   z-index: 10;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
+  flex-direction:column;
   overflow: hidden;
 }
 
-/* work */
 #work {
   position: relative;
   z-index: 20;
@@ -56,7 +53,7 @@ body { scroll-behavior: smooth; }
   will-change: transform;
 }
 
-/* 🔥 línea ultra fina */
+/* línea fina */
 #work::before {
   content: "";
   position: absolute;
@@ -65,7 +62,6 @@ body { scroll-behavior: smooth; }
   width: 100%;
   height: 0.5px;
   background: rgba(0,0,0,0.5);
-  pointer-events: none;
 }
 </style>
 </head>
@@ -107,7 +103,7 @@ body { scroll-behavior: smooth; }
 const hero = document.querySelector("#hero");
 const work = document.querySelector("#work");
 
-// cursor
+// ---------------- CURSOR ----------------
 const images = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
@@ -148,7 +144,8 @@ hero.addEventListener("mousemove", (e) => {
   currentIndex = (currentIndex + 1) % images.length;
 });
 
-// scroll suave
+// ---------------- SCROLL SUAVE + TIMING FIX ----------------
+
 let targetScroll = 0;
 let currentScroll = 0;
 
@@ -160,7 +157,12 @@ function animate() {
 
   currentScroll += (targetScroll - currentScroll) * 0.08;
 
-  const progress = Math.min(currentScroll / window.innerHeight, 1);
+  // 🔥 AJUSTE CLAVE
+  const start = 0;                 // empieza inmediato
+  const end = window.innerHeight * 0.6; // termina antes
+
+  let progress = (currentScroll - start) / (end - start);
+  progress = Math.min(Math.max(progress, 0), 1);
 
   hero.style.filter = `blur(${progress * 20}px)`;
   work.style.transform = `translateY(${100 - progress * 100}vh)`;

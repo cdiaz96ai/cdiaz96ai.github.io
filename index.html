@@ -103,7 +103,7 @@ body { scroll-behavior: smooth; }
 const hero = document.querySelector("#hero");
 const work = document.querySelector("#work");
 
-// ---------------- CURSOR ----------------
+
 const images = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
@@ -144,7 +144,6 @@ hero.addEventListener("mousemove", (e) => {
   currentIndex = (currentIndex + 1) % images.length;
 });
 
-// ---------------- SCROLL SUAVE + TIMING FIX ----------------
 
 let targetScroll = 0;
 let currentScroll = 0;
@@ -157,9 +156,8 @@ function animate() {
 
   currentScroll += (targetScroll - currentScroll) * 0.08;
 
-  // 🔥 AJUSTE CLAVE
-  const start = 0;                 // empieza inmediato
-  const end = window.innerHeight * 0.6; // termina antes
+  const start = 0;                
+  const end = window.innerHeight * 0.6; 
 
   let progress = (currentScroll - start) / (end - start);
   progress = Math.min(Math.max(progress, 0), 1);

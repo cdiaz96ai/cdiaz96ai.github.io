@@ -660,6 +660,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       }
     }
     particles = newP;
+    heroTitle.style.opacity = '0';
     ready = true;
   }
 
@@ -672,19 +673,9 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     if (!ready) return;
     const wP = window._particleWP || 0;
     const W = window.innerWidth, H = window.innerHeight;
-    const showParticles = isHovering || wP >= 0.01;
-
-    if (!showParticles) {
-      heroTitle.style.opacity = '1';
-      heroSub.style.opacity   = '1';
-      ctx.clearRect(0, 0, W, H);
-      for (const p of particles) { p.cx = p.ox; p.cy = p.oy; p.vx = 0; p.vy = 0; }
-      return;
-    }
-
-    heroTitle.style.opacity = '0';
-    heroSub.style.opacity   = Math.max(0, 1 - wP * 3).toString();
     const t = wP * wP * (3 - 2 * wP);
+
+    heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
 
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#f0f0f0';

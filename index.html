@@ -857,12 +857,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   let sn = {};
 
   function snakeFood() {
-    const M = 3; // margen mínimo desde los bordes
+    const M = 3; // margen desde bordes laterales/inferior
     let f;
     do {
       f = {
         x: M + (Math.random() * (sn.cols - M * 2) | 0),
-        y: M + (Math.random() * (sn.rows - M * 2) | 0)
+        y: sn.topRow + M + (Math.random() * (sn.rows - sn.topRow - M * 2) | 0)
       };
     } while (sn.body.some(c => c.x === f.x && c.y === f.y));
     return f;
@@ -870,9 +870,13 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
 
   function snakeStart() {
     const W = window.innerWidth, H = window.innerHeight;
-    sn.cols = Math.floor(W / CELL);
-    sn.rows = Math.floor(H / CELL);
-    const sx = sn.cols >> 1, sy = sn.rows >> 1;
+    const navH = (document.querySelector('nav') || {}).getBoundingClientRect
+      ? document.querySelector('nav').getBoundingClientRect().height
+      : 60;
+    sn.cols   = Math.floor(W / CELL);
+    sn.rows   = Math.floor(H / CELL);
+    sn.topRow = Math.ceil(navH / CELL); // filas reservadas para el nav
+    const sx = sn.cols >> 1, sy = sn.topRow + ((sn.rows - sn.topRow) >> 1);
     sn.body     = [{ x: sx, y: sy }, { x: sx - 1, y: sy }, { x: sx - 2, y: sy }];
     sn.dir      = { dx: 1, dy: 0 };
     sn.nextDir  = { dx: 1, dy: 0 };
@@ -891,7 +895,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     const head = sn.body[0];
     const nx = head.x + sn.dir.dx;
     const ny = head.y + sn.dir.dy;
-    if (nx < 0 || nx >= sn.cols || ny < 0 || ny >= sn.rows) { sn.over = true; return; }
+    if (nx < 0 || nx >= sn.cols || ny < sn.topRow || ny >= sn.rows) { sn.over = true; return; }
     if (sn.body.slice(1).some(c => c.x === nx && c.y === ny)) { sn.over = true; return; }
     sn.body.unshift({ x: nx, y: ny });
     if (nx === sn.food.x && ny === sn.food.y) {

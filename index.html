@@ -65,7 +65,7 @@ html, body {
   /* WORK */
   #work { padding: 72px 16px 16px; overflow-y: auto; }
   .section-heading { margin-bottom: 16px; }
-  #work-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; flex: none; }
+  #work-grid { grid-template-columns: 1fr; grid-template-rows: auto; flex: none; }
   .project-tile { aspect-ratio: 16/9; min-height: unset; }
   .tile-info { opacity: 1; transform: translateY(0); } /* siempre visible en móvil */
 
@@ -569,6 +569,22 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   document.getElementById('clock-ap').textContent = ' ' + ap;
   setTimeout(updateClock, 1000);
 })();
+
+// ─── MOBILE: puente scroll work → about ──────────────────────────────────
+if (window.innerWidth <= 768) {
+  let bridgeTimeout;
+  workEl.addEventListener('scroll', () => {
+    const atBottom = workEl.scrollTop + workEl.clientHeight >= workEl.scrollHeight - 8;
+    if (atBottom) {
+      clearTimeout(bridgeTimeout);
+      bridgeTimeout = setTimeout(() => {
+        window.scrollTo({ top: window.innerWidth, behavior: 'smooth' });
+      }, 350);
+    } else {
+      clearTimeout(bridgeTimeout);
+    }
+  });
+}
 
 // ─── CURSOR IMAGES EN HERO ────────────────────────────────────────────────
 const imageSrcs = [

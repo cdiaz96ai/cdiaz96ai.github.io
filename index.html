@@ -857,9 +857,14 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   let sn = {};
 
   function snakeFood() {
+    const M = 3; // margen mínimo desde los bordes
     let f;
-    do { f = { x: Math.random() * sn.cols | 0, y: Math.random() * sn.rows | 0 }; }
-    while (sn.body.some(c => c.x === f.x && c.y === f.y));
+    do {
+      f = {
+        x: M + (Math.random() * (sn.cols - M * 2) | 0),
+        y: M + (Math.random() * (sn.rows - M * 2) | 0)
+      };
+    } while (sn.body.some(c => c.x === f.x && c.y === f.y));
     return f;
   }
 
@@ -884,8 +889,9 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     if (sn.over) return;
     sn.dir = sn.nextDir;
     const head = sn.body[0];
-    const nx = (head.x + sn.dir.dx + sn.cols) % sn.cols;
-    const ny = (head.y + sn.dir.dy + sn.rows) % sn.rows;
+    const nx = head.x + sn.dir.dx;
+    const ny = head.y + sn.dir.dy;
+    if (nx < 0 || nx >= sn.cols || ny < 0 || ny >= sn.rows) { sn.over = true; return; }
     if (sn.body.slice(1).some(c => c.x === nx && c.y === ny)) { sn.over = true; return; }
     sn.body.unshift({ x: nx, y: ny });
     if (nx === sn.food.x && ny === sn.food.y) {

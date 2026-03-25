@@ -609,6 +609,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   heroPanel.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+-=<>?/|\\';
   let particles = [], ready = false;
   let mouseX = null, mouseY = null, isHovering = false;
 
@@ -646,7 +647,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     oc.fillText('CARLOTA DÍAZ', W / 2, H / 2);
 
     const data = oc.getImageData(0, 0, W, H).data;
-    const step = 4, newP = [];
+    const step = 6, newP = [];
     for (let y = 0; y < H; y += step) {
       for (let x = 0; x < W; x += step) {
         if (data[(y * W + x) * 4 + 3] > 80) {
@@ -656,7 +657,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
             ox: x, oy: y, cx: x, cy: y, vx: 0, vy: 0,
             tx: x + Math.cos(angle) * dist,
             ty: y + Math.sin(angle) * dist,
-            r: Math.random() * 1.2 + 0.4
+            char: CHARS[Math.random() * CHARS.length | 0],
+            timer: (Math.random() * 20) | 0
           });
         }
       }
@@ -680,6 +682,9 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
 
     ctx.clearRect(0, 0, W, H);
+    ctx.font = '5px monospace';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
     ctx.fillStyle = '#f0f0f0';
 
     for (const p of particles) {
@@ -688,7 +693,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       p.vx += (targetX - p.cx) * 0.1;
       p.vy += (targetY - p.cy) * 0.1;
 
-      // Repulsión del cursor (solo cuando el texto aún está formado)
+      // Repulsión del cursor
       if (mouseX !== null && t < 0.2) {
         const dx = p.cx - mouseX, dy = p.cy - mouseY;
         const d2 = dx * dx + dy * dy;
@@ -704,10 +709,16 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       p.vx *= 0.88; p.vy *= 0.88;
       p.cx += p.vx; p.cy += p.vy;
 
+      // Cambiar carácter aleatoriamente
+      if (--p.timer <= 0) {
+        p.char  = CHARS[Math.random() * CHARS.length | 0];
+        p.timer = (8 + Math.random() * 20) | 0;
+      }
+
       const alpha = Math.max(0, 1 - t * 1.4);
       if (alpha <= 0) continue;
       ctx.globalAlpha = alpha;
-      ctx.fillRect(p.cx - p.r, p.cy - p.r, p.r * 2, p.r * 2);
+      ctx.fillText(p.char, p.cx, p.cy);
     }
     ctx.globalAlpha = 1;
   })();

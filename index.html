@@ -109,14 +109,14 @@ body { scroll-behavior: smooth; }
   <section id="about" class="py-40 px-8">About</section>
 
   <section id="contact" class="py-40 px-8 text-center">
-    <a href="mailto:hello@carlotadiaz.ai">hello@carlotadiaz.ai</a>
+    <a href="/cdn-cgi/l/email-protection#c6aea3aaaaa986a5a7b4aaa9b2a7a2afa7bce8a7af"><span class="__cf_email__" data-cfemail="99f1fcf5f5f6d9faf8ebf5f6edf8fdf0f8e3b7f8f0">[email&#160;protected]</span></a>
   </section>
 
 </main>
 
 <footer class="py-20 px-8">© Carlota Díaz</footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const hero = document.querySelector("#hero");
 const heroInner = document.querySelector("#hero-inner");
 const work = document.querySelector("#work");
@@ -144,6 +144,9 @@ let lastMove = 0;
 hero.addEventListener("mousemove", (e) => {
   const now = Date.now();
   if (now - lastMove < 140) return;
+  // Solo mostramos imágenes si el hero todavía es visible
+  const progress = Math.min(currentScroll / (window.innerHeight * 0.4), 1);
+  if (progress >= 1) return;
   lastMove = now;
 
   const rect = hero.getBoundingClientRect();
@@ -190,16 +193,4 @@ function animate() {
 
   // Blur aplicado al hero-inner (layer GPU aislado), no al hero completo
   heroInner.style.filter = `blur(${progress * 20}px)`;
-  work.style.transform = `translateY(${30 - progress * 30}vh)`;
-
-  // Paramos el loop cuando el scroll ya está asentado (ahorro de CPU)
-  if (Math.abs(targetScroll - currentScroll) > 0.5) {
-    requestAnimationFrame(animate);
-  } else {
-    animating = false;
-  }
-}
-</script>
-
-</body>
-</html>
+  work.style.transform = `translateY(${30 - progr

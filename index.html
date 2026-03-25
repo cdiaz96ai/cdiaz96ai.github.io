@@ -571,21 +571,6 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   setTimeout(updateClock, 1000);
 })();
 
-// ─── MOBILE: puente scroll work → about ──────────────────────────────────
-if (window.innerWidth <= 768) {
-  let bridgeTimeout;
-  workEl.addEventListener('scroll', () => {
-    const atBottom = workEl.scrollTop + workEl.clientHeight >= workEl.scrollHeight - 8;
-    if (atBottom) {
-      clearTimeout(bridgeTimeout);
-      bridgeTimeout = setTimeout(() => {
-        window.scrollTo({ top: window.innerWidth, behavior: 'smooth' });
-      }, 350);
-    } else {
-      clearTimeout(bridgeTimeout);
-    }
-  });
-}
 
 // ─── CURSOR IMAGES EN HERO ────────────────────────────────────────────────
 const imageSrcs = [

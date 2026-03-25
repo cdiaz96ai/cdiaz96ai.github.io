@@ -428,6 +428,7 @@ function navigateTo(newIdx, direction) {
   const incoming = buildScrollDiv(newIdx);
   incoming.style.position = 'absolute';
   incoming.style.inset = '0';
+  incoming.style.background = '#0a0a0a';
   incoming.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
   incoming.style.transition = 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
   incoming.style.zIndex = '5';

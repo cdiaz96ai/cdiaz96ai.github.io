@@ -573,6 +573,9 @@ function animate() {
   const aP = clamp((s - W) / T, 0, 1);
   const cP = clamp((s - 2 * W) / T, 0, 1);
 
+  // Móvil: resetear scroll de Work cuando el usuario vuelve al hero
+  if (W < 768 && wP < 0.05) workEl.scrollTop = 0;
+
   // Work: zoom in, luego desaparece (partículas toman el relevo)
   workEl.style.transform     = `scale(${0.15 + wP * 0.85})`;
   workEl.style.opacity       = wP * Math.max(0, 1 - aP * 5);

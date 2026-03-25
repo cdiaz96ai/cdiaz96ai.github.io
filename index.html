@@ -124,12 +124,6 @@ html, body {
 .contact-link:hover { color: var(--accent); border-color: var(--accent); }
 .contact-footer { margin-top: 28px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
 
-/* ─── CURSOR IMAGES ─── */
-.cursor-image {
-  position: absolute; width: 150px; height: 200px; pointer-events: none; z-index: 5;
-  opacity: 0; transform: scale(0.95); transition: opacity 0.4s ease, transform 0.4s ease;
-  object-fit: cover; border-radius: 2px;
-}
 
 /* ─── NAV ─── */
 nav {
@@ -551,7 +545,7 @@ function animate() {
   const wP = clamp(s / T, 0, 1);
   workEl.style.transform  = `translateX(${(1 - wP) * 100}vw)`;
   heroInner.style.filter  = `blur(${wP * 16}px)`;
-  if (window._renderParticles) window._renderParticles(wP);
+  window._particleWP = wP;
   const aP = clamp((s - W) / T, 0, 1);
   aboutEl.style.transform = `translateX(${(1 - aP) * 100}vw)`;
   workEl.style.filter     = `blur(${aP * 16}px)`;
@@ -587,28 +581,6 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
 })();
 
 
-// ─── CURSOR IMAGES EN HERO ────────────────────────────────────────────────
-const imageSrcs = [
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuD5apwWXgN2Kp2lfA7Nje1FNB3_7yYiqn07SHdnGlWlEKF_L5YWWwpp2vtu6VS_2q-Mj4UDMYW1-f580VKY67tf_GQrAewvf8jD0Onsq5Z9ow86S7otBE97mClBVbBzkj_QOZqK5ENhpcUJBcQibd7M0iK5MnSZG5bekubIhhvKcOBrnuERN7-yishRTKxEOKowFU1jFRcWsd4xb7whxkB35N9u2iRsv1Bpa1Q8Jcf0TtLfHqosfx8tK_lbu-LFIn8M3LNdqv__s2g"
-];
-const imagePool = imageSrcs.map(src => { const img = new Image(); img.src = src; img.className = "cursor-image"; return img; });
-let currentIndex = 0, lastMove = 0;
-heroPanel.addEventListener('mousemove', e => {
-  const now = Date.now();
-  if (now - lastMove < 140) return;
-  if (window.scrollY > window.innerWidth * 0.2) return;
-  lastMove = now;
-  const rect = heroPanel.getBoundingClientRect();
-  const img  = imagePool[currentIndex].cloneNode();
-  heroPanel.appendChild(img);
-  img.style.left = (e.clientX - rect.left) + 'px';
-  img.style.top  = (e.clientY - rect.top) + 'px';
-  requestAnimationFrame(() => { img.style.opacity = '1'; img.style.transform = 'scale(1)'; });
-  setTimeout(() => { img.style.opacity = '0'; img.style.transform = 'scale(0.95)'; setTimeout(() => img.remove(), 400); }, 800);
-  currentIndex = (currentIndex + 1) % imagePool.length;
-});
 
 // ─── PALABRA GIRATORIA EN CONTACT ────────────────────────────────────────
 (function cycleContactWord() {
@@ -636,6 +608,17 @@ heroPanel.addEventListener('mousemove', e => {
   const ctx = canvas.getContext('2d');
 
   let particles = [], ready = false;
+  let mouseX = null, mouseY = null, isHovering = false;
+
+  heroPanel.addEventListener('mousemove', e => {
+    const rect = heroPanel.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    isHovering = true;
+  });
+  heroPanel.addEventListener('mouseleave', () => {
+    mouseX = null; mouseY = null; isHovering = false;
+  });
 
   function build() {
     const W = window.innerWidth, H = window.innerHeight;
@@ -646,17 +629,13 @@ heroPanel.addEventListener('mousemove', e => {
     canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Canvas auxiliar para muestrear los píxeles del texto
     const off = document.createElement('canvas');
     off.width = W; off.height = H;
     const oc = off.getContext('2d');
-    // Ajustar font size para que el texto no se corte
     let fs = parseFloat(window.getComputedStyle(heroTitle).fontSize);
     oc.font = `800 ${fs}px Syne, sans-serif`;
     const measured = oc.measureText('CARLOTA DÍAZ');
     if (measured.width > W * 0.92) fs = fs * (W * 0.92 / measured.width);
-
-    oc.clearRect(0, 0, W, H);
     oc.font = `800 ${fs}px Syne, sans-serif`;
     oc.letterSpacing = '-0.04em';
     oc.textAlign = 'center';
@@ -665,55 +644,80 @@ heroPanel.addEventListener('mousemove', e => {
     oc.fillText('CARLOTA DÍAZ', W / 2, H / 2);
 
     const data = oc.getImageData(0, 0, W, H).data;
-    particles = [];
-    const step = 4;
+    const step = 4, newP = [];
     for (let y = 0; y < H; y += step) {
       for (let x = 0; x < W; x += step) {
         if (data[(y * W + x) * 4 + 3] > 80) {
-          const angle = Math.atan2(y - H / 2, x - W / 2) + (Math.random() - 0.5) * 2.5;
+          const angle = Math.atan2(y - H/2, x - W/2) + (Math.random() - 0.5) * 2.5;
           const dist  = (0.15 + Math.random() * 0.85) * Math.max(W, H) * 1.2;
-          particles.push({
-            ox: x, oy: y,
+          newP.push({
+            ox: x, oy: y, cx: x, cy: y, vx: 0, vy: 0,
             tx: x + Math.cos(angle) * dist,
             ty: y + Math.sin(angle) * dist,
-            r:  Math.random() * 1.2 + 0.4
+            r: Math.random() * 1.2 + 0.4
           });
         }
       }
     }
+    particles = newP;
     ready = true;
   }
 
   document.fonts.ready.then(build);
   window.addEventListener('resize', build);
+  window._particleWP = 0;
 
-  window._renderParticles = function(wP) {
+  (function loop() {
+    requestAnimationFrame(loop);
     if (!ready) return;
+    const wP = window._particleWP || 0;
     const W = window.innerWidth, H = window.innerHeight;
-    ctx.clearRect(0, 0, W, H);
-    // Mientras no hay scroll, mostrar texto HTML normal
-    if (wP < 0.01) {
+    const showParticles = isHovering || wP >= 0.01;
+
+    if (!showParticles) {
       heroTitle.style.opacity = '1';
       heroSub.style.opacity   = '1';
+      ctx.clearRect(0, 0, W, H);
+      for (const p of particles) { p.cx = p.ox; p.cy = p.oy; p.vx = 0; p.vy = 0; }
       return;
     }
+
     heroTitle.style.opacity = '0';
-    // smoothstep para movimiento más orgánico
+    heroSub.style.opacity   = Math.max(0, 1 - wP * 3).toString();
     const t = wP * wP * (3 - 2 * wP);
+
+    ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#f0f0f0';
+
     for (const p of particles) {
+      const targetX = p.ox + (p.tx - p.ox) * t;
+      const targetY = p.oy + (p.ty - p.oy) * t;
+      p.vx += (targetX - p.cx) * 0.1;
+      p.vy += (targetY - p.cy) * 0.1;
+
+      // Repulsión del cursor (solo cuando el texto aún está formado)
+      if (mouseX !== null && t < 0.2) {
+        const dx = p.cx - mouseX, dy = p.cy - mouseY;
+        const d2 = dx * dx + dy * dy;
+        const R = 90;
+        if (d2 < R * R && d2 > 0) {
+          const d = Math.sqrt(d2);
+          const force = ((R - d) / R) * 5;
+          p.vx += (dx / d) * force;
+          p.vy += (dy / d) * force;
+        }
+      }
+
+      p.vx *= 0.82; p.vy *= 0.82;
+      p.cx += p.vx; p.cy += p.vy;
+
       const alpha = Math.max(0, 1 - t * 1.4);
       if (alpha <= 0) continue;
       ctx.globalAlpha = alpha;
-      const x = p.ox + (p.tx - p.ox) * t;
-      const y = p.oy + (p.ty - p.oy) * t;
-      ctx.beginPath();
-      ctx.arc(x, y, p.r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillRect(p.cx - p.r, p.cy - p.r, p.r * 2, p.r * 2);
     }
     ctx.globalAlpha = 1;
-    heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
-  };
+  })();
 })();
 </script>
 </body>

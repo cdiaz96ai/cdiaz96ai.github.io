@@ -145,13 +145,14 @@ nav {
 }
 #project-detail.active { transform: translateX(0); }
 
-/* Barra superior: back + contador + flechas */
+/* Barra superior: back + contador */
 #detail-topbar {
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: space-between;
   padding: 18px 32px;
   background: rgba(10,10,10,0.8); backdrop-filter: blur(20px);
   border-bottom: 0.5px solid var(--line);
+  position: relative; z-index: 10;
 }
 .detail-back-btn {
   display: flex; align-items: center; gap: 8px; cursor: pointer;
@@ -167,29 +168,25 @@ nav {
 #detail-counter { font-size: 0.7rem; letter-spacing: 0.15em; color: var(--muted); }
 #detail-counter span { color: var(--text); }
 
-.detail-nav-arrows { display: flex; gap: 4px; }
-.detail-arrow {
-  display: flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px; border-radius: 2px;
-  background: none; border: 0.5px solid var(--line); cursor: pointer;
-  color: var(--muted); transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+/* ─── CANVAS: área donde se solapan las tarjetas ─── */
+#detail-canvas {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
 }
-.detail-arrow:hover { color: var(--text); border-color: rgba(240,240,240,0.3); background: rgba(255,255,255,0.05); }
-.detail-arrow:disabled { opacity: 0.2; cursor: default; }
-.detail-arrow svg { width: 14px; height: 14px; }
 
 /* Contenido scrollable */
-#detail-scroll { flex: 1; overflow-y: auto; }
+#detail-scroll {
+  position: absolute; inset: 0;
+  overflow-y: auto;
+}
 
-/* El inner hace fade/slide al cambiar de proyecto */
+/* El inner no necesita animación propia — la hace el canvas */
 #detail-inner {
   padding: 64px;
   display: flex; flex-direction: column; gap: 40px;
   max-width: 1100px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-#detail-inner.swapping { opacity: 0; transform: translateX(20px); }
-#detail-inner.swapping-left { opacity: 0; transform: translateX(-20px); }
 
 .detail-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em; color: var(--accent); }
 .detail-title {
@@ -213,20 +210,22 @@ nav {
   color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em;
 }
 
-/* Navegación prev/next en el pie del contenido */
-#detail-footnav {
-  display: flex; justify-content: space-between; align-items: center;
-  padding-top: 40px; border-top: 0.5px solid var(--line); margin-top: 8px;
+/* ─── FLECHAS LATERALES ─── */
+.detail-side-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 0.5px solid var(--line); border-radius: 2px;
+  cursor: pointer; color: var(--muted);
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
-.footnav-item { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
-.footnav-item.next { text-align: right; }
-.footnav-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
-.footnav-name {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
-  color: var(--text); transition: color 0.25s ease;
-}
-.footnav-brand { font-size: 0.7rem; color: var(--accent); }
-.footnav-item:hover .footnav-name { color: var(--accent); }
+.detail-side-arrow:hover { color: var(--text); border-color: rgba(240,240,240,0.3); background: rgba(255,255,255,0.05); }
+.detail-side-arrow svg { width: 18px; height: 18px; }
+#detail-side-prev { left: 20px; }
+#detail-side-next { right: 20px; }
 </style>
 </head>
 <body>
@@ -294,41 +293,33 @@ nav {
       Back
     </button>
     <span id="detail-counter"><span id="counter-current">1</span> / 8</span>
-    <div class="detail-nav-arrows">
-      <button class="detail-arrow" id="arrow-prev" title="Proyecto anterior">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <button class="detail-arrow" id="arrow-next" title="Proyecto siguiente">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
   </div>
 
-  <!-- Contenido scrollable -->
-  <div id="detail-scroll">
-    <div id="detail-inner">
-      <div>
-        <p class="detail-brand" id="detail-brand-text"></p>
-        <h2 class="detail-title" id="detail-title-text"></h2>
-      </div>
-      <p class="detail-description" id="detail-desc-text"></p>
-      <div class="detail-video-wrap" id="detail-video-wrap">
-        <div class="detail-video-placeholder" id="detail-video-placeholder">Vídeo próximamente</div>
-      </div>
-      <!-- Nav pie de página -->
-      <div id="detail-footnav">
-        <div class="footnav-item prev" id="footnav-prev">
-          <span class="footnav-label">← Anterior</span>
-          <span class="footnav-name" id="footnav-prev-title"></span>
-          <span class="footnav-brand" id="footnav-prev-brand"></span>
+  <!-- Canvas: área con overflow hidden donde se solapan las tarjetas -->
+  <div id="detail-canvas">
+
+    <!-- Flechas laterales -->
+    <button class="detail-side-arrow" id="detail-side-prev" title="Proyecto anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="detail-side-arrow" id="detail-side-next" title="Proyecto siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <!-- Contenido scrollable actual -->
+    <div id="detail-scroll">
+      <div id="detail-inner">
+        <div>
+          <p class="detail-brand" id="detail-brand-text"></p>
+          <h2 class="detail-title" id="detail-title-text"></h2>
         </div>
-        <div class="footnav-item next" id="footnav-next">
-          <span class="footnav-label">Siguiente →</span>
-          <span class="footnav-name" id="footnav-next-title"></span>
-          <span class="footnav-brand" id="footnav-next-brand"></span>
+        <p class="detail-description" id="detail-desc-text"></p>
+        <div class="detail-video-wrap" id="detail-video-wrap">
+          <div class="detail-video-placeholder" id="detail-video-placeholder">Vídeo próximamente</div>
         </div>
       </div>
     </div>
+
   </div>
 
 </div>
@@ -346,53 +337,76 @@ const PROJECTS = [
   { brand: 'Tinder',     title: 'Movie maker',         description: 'Descripción del proyecto — próximamente.', videoUrl: null },
 ];
 
-const overlay     = document.getElementById('project-detail');
-const detailInner = document.getElementById('detail-inner');
+const overlay      = document.getElementById('project-detail');
+const detailCanvas = document.getElementById('detail-canvas');
 const detailScroll = document.getElementById('detail-scroll');
 
 let currentIdx = -1;
+let isAnimating = false;
 
-// ─── RENDERIZAR CONTENIDO ─────────────────────────────────────────────────
-function renderProject(idx) {
-  const p    = PROJECTS[idx];
-  const prev = PROJECTS[(idx - 1 + PROJECTS.length) % PROJECTS.length];
-  const next = PROJECTS[(idx + 1) % PROJECTS.length];
+// ─── RENDERIZAR CONTENIDO EN UN CONTENEDOR ───────────────────────────────
+function buildScrollDiv(idx) {
+  const p = PROJECTS[idx];
+  const div = document.createElement('div');
+  div.style.cssText = 'position:absolute;inset:0;overflow-y:auto;';
 
-  document.getElementById('detail-brand-text').textContent = p.brand;
-  document.getElementById('detail-title-text').textContent = p.title;
-  document.getElementById('detail-desc-text').textContent  = p.description;
-  document.getElementById('counter-current').textContent   = idx + 1;
+  const inner = document.createElement('div');
+  inner.style.cssText = 'padding:64px;display:flex;flex-direction:column;gap:40px;max-width:1100px;';
+
+  // Cabecera
+  const header = document.createElement('div');
+  const brand  = document.createElement('p');
+  brand.className = 'detail-brand';
+  brand.textContent = p.brand;
+  const title = document.createElement('h2');
+  title.className = 'detail-title';
+  title.textContent = p.title;
+  title.style.marginTop = '8px';
+  header.appendChild(brand);
+  header.appendChild(title);
+
+  // Descripción
+  const desc = document.createElement('p');
+  desc.className = 'detail-description';
+  desc.textContent = p.description;
 
   // Vídeo
-  const wrap = document.getElementById('detail-video-wrap');
-  const placeholder = document.getElementById('detail-video-placeholder');
-  const existingIframe = wrap.querySelector('iframe');
-  if (existingIframe) existingIframe.remove();
-
+  const videoWrap = document.createElement('div');
+  videoWrap.className = 'detail-video-wrap';
   if (p.videoUrl) {
-    placeholder.style.display = 'none';
     const iframe = document.createElement('iframe');
     iframe.src = p.videoUrl;
     iframe.allowFullscreen = true;
     iframe.allow = 'autoplay; fullscreen';
-    wrap.appendChild(iframe);
+    videoWrap.appendChild(iframe);
   } else {
-    placeholder.style.display = 'flex';
+    const ph = document.createElement('div');
+    ph.className = 'detail-video-placeholder';
+    ph.textContent = 'Vídeo próximamente';
+    videoWrap.appendChild(ph);
   }
 
-  // Footnav
-  document.getElementById('footnav-prev-title').textContent = prev.title;
-  document.getElementById('footnav-prev-brand').textContent = prev.brand;
-  document.getElementById('footnav-next-title').textContent = next.title;
-  document.getElementById('footnav-next-brand').textContent = next.brand;
+  inner.appendChild(header);
+  inner.appendChild(desc);
+  inner.appendChild(videoWrap);
+  div.appendChild(inner);
+  return div;
 }
 
 // ─── ABRIR DETALLE ────────────────────────────────────────────────────────
 function openDetail(idx) {
   currentIdx = idx;
-  renderProject(idx);
+
+  // Limpiar canvas y construir contenido inicial
+  const existingScroll = document.getElementById('detail-scroll');
+  if (existingScroll) existingScroll.remove();
+
+  const newScroll = buildScrollDiv(idx);
+  newScroll.id = 'detail-scroll';
+  detailCanvas.appendChild(newScroll);
+
+  document.getElementById('counter-current').textContent = idx + 1;
   overlay.classList.add('active');
-  detailScroll.scrollTop = 0;
   document.body.style.overflow = 'hidden';
 }
 
@@ -400,66 +414,59 @@ function openDetail(idx) {
 function closeDetail() {
   overlay.classList.remove('active');
   document.body.style.overflow = '';
-  // Limpiar iframe al terminar la transición
   setTimeout(() => {
-    const iframe = document.getElementById('detail-video-wrap').querySelector('iframe');
-    if (iframe) iframe.remove();
-    document.getElementById('detail-video-placeholder').style.display = 'flex';
+    const s = document.getElementById('detail-scroll');
+    if (s) s.scrollTop = 0;
   }, 800);
 }
 
-// ─── NAVEGAR ENTRE PROYECTOS ──────────────────────────────────────────────
+// ─── NAVEGAR — efecto tarjeta solapándose ─────────────────────────────────
 function navigateTo(newIdx, direction) {
-  // direction: 'next' | 'prev'
-  const swapClass = direction === 'next' ? 'swapping' : 'swapping-left';
-  detailInner.classList.add(swapClass);
+  if (isAnimating) return;
+  isAnimating = true;
+
+  const incoming = buildScrollDiv(newIdx);
+  incoming.style.position = 'absolute';
+  incoming.style.inset = '0';
+  incoming.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+  incoming.style.transition = 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+  incoming.style.zIndex = '5';
+  detailCanvas.appendChild(incoming);
+
+  // Forzar reflow antes de animar
+  incoming.getBoundingClientRect();
+  incoming.style.transform = 'translateX(0)';
+
+  document.getElementById('counter-current').textContent = newIdx + 1;
 
   setTimeout(() => {
-    currentIdx = newIdx;
-    renderProject(newIdx);
-    detailScroll.scrollTop = 0;
-
-    // Posición de entrada opuesta
-    const enterFrom = direction === 'next' ? 'translateX(20px)' : 'translateX(-20px)';
-    detailInner.style.transition = 'none';
-    detailInner.style.transform  = enterFrom;
-    detailInner.style.opacity    = '0';
-    detailInner.classList.remove(swapClass);
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        detailInner.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
-        detailInner.style.transform  = 'translateX(0)';
-        detailInner.style.opacity    = '1';
-      });
-    });
-
-    setTimeout(() => { detailInner.style.transition = ''; detailInner.style.transform = ''; detailInner.style.opacity = ''; }, 300);
-  }, 200);
+    // Reemplazar el scroll anterior con el incoming
+    const oldScroll = document.getElementById('detail-scroll');
+    if (oldScroll) oldScroll.remove();
+    incoming.style.transition = '';
+    incoming.style.transform  = '';
+    incoming.style.zIndex     = '';
+    incoming.id = 'detail-scroll';
+    currentIdx  = newIdx;
+    isAnimating = false;
+  }, 750);
 }
 
 // ─── EVENTOS ──────────────────────────────────────────────────────────────
 document.getElementById('detail-back').addEventListener('click', closeDetail);
 
-document.getElementById('arrow-prev').addEventListener('click', () => {
+document.getElementById('detail-side-prev').addEventListener('click', () => {
   navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
 });
-document.getElementById('arrow-next').addEventListener('click', () => {
-  navigateTo((currentIdx + 1) % PROJECTS.length, 'next');
-});
-
-document.getElementById('footnav-prev').addEventListener('click', () => {
-  navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
-});
-document.getElementById('footnav-next').addEventListener('click', () => {
+document.getElementById('detail-side-next').addEventListener('click', () => {
   navigateTo((currentIdx + 1) % PROJECTS.length, 'next');
 });
 
 document.addEventListener('keydown', e => {
   if (!overlay.classList.contains('active')) return;
-  if (e.key === 'Escape')      closeDetail();
-  if (e.key === 'ArrowRight')  navigateTo((currentIdx + 1) % PROJECTS.length, 'next');
-  if (e.key === 'ArrowLeft')   navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
+  if (e.key === 'Escape')     closeDetail();
+  if (e.key === 'ArrowRight') navigateTo((currentIdx + 1) % PROJECTS.length, 'next');
+  if (e.key === 'ArrowLeft')  navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
 });
 
 document.querySelectorAll('.project-tile').forEach(tile => {

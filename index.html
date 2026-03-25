@@ -602,6 +602,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   const heroTitle = document.querySelector('.text-display-xl');
   const heroSub   = document.querySelector('.hero-sub');
 
+  heroTitle.style.opacity = '0'; // ocultar inmediatamente, antes de cargar fuentes
+
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:3;';
   heroPanel.appendChild(canvas);

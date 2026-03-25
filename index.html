@@ -539,25 +539,29 @@ function animate() {
   const s = currentScroll, W = window.innerWidth, T = TRANS * W;
 
   const wP = clamp(s / T, 0, 1);
-  workEl.style.transform    = `scale(${0.15 + wP * 0.85})`;
-  workEl.style.opacity      = wP;
-  workEl.style.pointerEvents = wP > 0.5 ? 'auto' : 'none';
-  heroInner.style.filter    = `blur(${wP * 16}px)`;
-  window._particleWP        = wP;
-
   const aP = clamp((s - W) / T, 0, 1);
-  aboutEl.style.transform    = `scale(${0.15 + aP * 0.85})`;
-  aboutEl.style.opacity      = aP;
-  aboutEl.style.pointerEvents = aP > 0.5 ? 'auto' : 'none';
-  workEl.style.filter        = `blur(${aP * 16}px)`;
-  if (window._workPx)  window._workPx.render(aP);
-
   const cP = clamp((s - 2 * W) / T, 0, 1);
-  contactEl.style.transform    = `scale(${0.15 + cP * 0.85})`;
-  contactEl.style.opacity      = cP;
-  contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
-  aboutEl.style.filter         = `blur(${cP * 16}px)`;
+
+  // Work: zoom in, luego desaparece (partículas toman el relevo)
+  workEl.style.transform     = `scale(${0.15 + wP * 0.85})`;
+  workEl.style.opacity       = wP * Math.max(0, 1 - aP * 5);
+  workEl.style.pointerEvents = wP > 0.5 && aP < 0.1 ? 'auto' : 'none';
+  workEl.style.filter        = '';
+  heroInner.style.filter     = `blur(${wP * 16}px)`;
+  window._particleWP         = wP;
+  if (window._workPx) window._workPx.render(aP);
+
+  // About: zoom in, luego desaparece (partículas toman el relevo)
+  aboutEl.style.transform     = `scale(${0.15 + aP * 0.85})`;
+  aboutEl.style.opacity       = aP * Math.max(0, 1 - cP * 5);
+  aboutEl.style.pointerEvents = aP > 0.5 && cP < 0.1 ? 'auto' : 'none';
+  aboutEl.style.filter        = '';
   if (window._aboutPx) window._aboutPx.render(cP);
+
+  // Contact: zoom in
+  contactEl.style.transform     = `scale(${0.15 + cP * 0.85})`;
+  contactEl.style.opacity       = cP;
+  contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
 
   if (Math.abs(targetScroll - currentScroll) > 0.3) requestAnimationFrame(animate);
   else animating = false;
@@ -608,113 +612,121 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
 (function initSectionParticles() {
   const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+-=<>?/|\\';
 
-  // Dibuja el contenido real de un panel en un canvas auxiliar para muestrear píxeles
-  function snapshotWork(W, H) {
-    const off = document.createElement('canvas');
-    off.width = W; off.height = H;
-    const oc = off.getContext('2d');
-    // Tiles
-    workEl.querySelectorAll('.project-tile').forEach(tile => {
-      const r = tile.getBoundingClientRect();
-      oc.fillStyle = '#585858';
-      oc.fillRect(r.left, r.top, r.width, r.height);
-      const brand = tile.querySelector('.tile-brand');
-      const title = tile.querySelector('.tile-title');
-      oc.font = 'bold 7px monospace'; oc.textBaseline = 'alphabetic'; oc.textAlign = 'left';
-      if (brand) { oc.fillStyle = '#E8571A'; oc.fillText(brand.textContent, r.left + 10, r.bottom - 22); }
-      if (title) { oc.fillStyle = '#f0f0f0'; oc.font = 'bold 9px monospace'; oc.fillText(title.textContent, r.left + 10, r.bottom - 11); }
-    });
-    // Heading
-    const h = workEl.querySelector('.section-heading');
-    if (h) { const r = h.getBoundingClientRect(); oc.fillStyle = 'rgba(240,240,240,0.55)'; oc.font = 'bold 7px monospace'; oc.fillText('SELECTED WORKS', r.left, r.bottom); }
-    return oc.getImageData(0, 0, W, H);
+  function scatter(x, y, W, H) {
+    const angle = Math.atan2(y - H / 2, x - W / 2) + (Math.random() - 0.5) * 1.8;
+    const dist  = (0.3 + Math.random() * 0.7) * Math.max(W, H) * 1.6;
+    return { tx: x + Math.cos(angle) * dist, ty: y + Math.sin(angle) * dist };
   }
 
-  function snapshotAbout(W, H) {
-    const off = document.createElement('canvas');
-    off.width = W; off.height = H;
-    const oc = off.getContext('2d');
-    oc.textBaseline = 'top'; oc.textAlign = 'left';
-    const h = aboutEl.querySelector('.section-heading');
-    if (h) { const r = h.getBoundingClientRect(); oc.fillStyle = 'rgba(240,240,240,0.55)'; oc.font = 'bold 7px monospace'; oc.fillText('ABOUT', r.left, r.top); }
+  function buildWorkParticles(W, H) {
+    const pts = [];
+    const step = 7;
+
+    // 8 project tiles
+    workEl.querySelectorAll('.project-tile').forEach(tile => {
+      const r = tile.getBoundingClientRect();
+      if (r.width === 0) return;
+      for (let y = r.top; y < r.bottom; y += step) {
+        for (let x = r.left; x < r.right; x += step) {
+          if (Math.random() > 0.55) continue;
+          // color: naranja en franja inferior (marca+título), gris en resto
+          const isBottom = y > r.bottom - 36;
+          const color = isBottom ? (y > r.bottom - 20 ? '#c4c4c4' : '#E8571A') : `hsl(0,0%,${32 + Math.random() * 20 | 0}%)`;
+          const { tx, ty } = scatter(x, y, W, H);
+          pts.push({ ox: x, oy: y, tx, ty, color, char: CHARS[Math.random() * CHARS.length | 0], timer: (Math.random() * 24) | 0 });
+        }
+      }
+    });
+
+    // Section heading
+    const h = workEl.querySelector('.section-heading');
+    if (h) {
+      const r = h.getBoundingClientRect();
+      for (let x = r.left; x < r.right; x += 5) {
+        for (let y = r.top; y < r.bottom; y += 5) {
+          if (Math.random() > 0.5) continue;
+          const { tx, ty } = scatter(x, y, W, H);
+          pts.push({ ox: x, oy: y, tx, ty, color: 'rgba(240,240,240,0.45)', char: CHARS[Math.random() * CHARS.length | 0], timer: (Math.random() * 24) | 0 });
+        }
+      }
+    }
+    return pts;
+  }
+
+  function buildAboutParticles(W, H) {
+    const pts = [];
+    const step = 7;
+
     const txt = aboutEl.querySelector('.about-text');
     if (txt) {
       const r = txt.getBoundingClientRect();
-      const lh = 30;
-      oc.font = '300 14px monospace';
-      [['Dirección de arte ', 'junior', '.'], ['Catadora de ramen ', 'senior', '.'], ['Chief Executive of ', 'terracitas al sol', '.']].forEach(([pre, acc, suf], i) => {
-        let cx = r.left;
-        const y = r.top + i * lh;
-        oc.fillStyle = 'rgba(240,240,240,0.75)'; oc.fillText(pre, cx, y); cx += oc.measureText(pre).width;
-        oc.fillStyle = '#E8571A'; oc.fillText(acc, cx, y); cx += oc.measureText(acc).width;
-        oc.fillStyle = 'rgba(240,240,240,0.75)'; oc.fillText(suf, cx, y);
-      });
+      for (let y = r.top; y < r.bottom; y += step) {
+        for (let x = r.left; x < r.right; x += step) {
+          if (Math.random() > 0.5) continue;
+          // las 3 líneas: cada línea ~1.8em × 1.05rem ≈ 34px de alto
+          const lineH = (r.height / 3);
+          const lineIdx = Math.floor((y - r.top) / lineH);
+          // parte naranja aproximada (palabra accentuada en medio de cada línea)
+          const midX = r.left + r.width * 0.35;
+          const color = (x > midX && x < midX + r.width * 0.3) ? '#E8571A' : 'rgba(240,240,240,0.7)';
+          const { tx, ty } = scatter(x, y, W, H);
+          pts.push({ ox: x, oy: y, tx, ty, color, char: CHARS[Math.random() * CHARS.length | 0], timer: (Math.random() * 24) | 0 });
+        }
+      }
     }
-    return oc.getImageData(0, 0, W, H);
+
+    const h = aboutEl.querySelector('.section-heading');
+    if (h) {
+      const r = h.getBoundingClientRect();
+      for (let x = r.left; x < r.right; x += 5) {
+        for (let y = r.top; y < r.bottom; y += 5) {
+          if (Math.random() > 0.5) continue;
+          const { tx, ty } = scatter(x, y, W, H);
+          pts.push({ ox: x, oy: y, tx, ty, color: 'rgba(240,240,240,0.4)', char: CHARS[Math.random() * CHARS.length | 0], timer: (Math.random() * 24) | 0 });
+        }
+      }
+    }
+    return pts;
   }
 
-  function buildFromSnapshot(snapshotFn, zIndex) {
+  function makeSystem(buildFn, zIndex) {
     const canvas = document.createElement('canvas');
     canvas.style.cssText = `position:fixed;top:0;left:0;pointer-events:none;z-index:${zIndex};`;
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
     let particles = [], built = false;
 
-    function build() {
-      if (built) return;
-      built = true;
-      const W = window.innerWidth, H = window.innerHeight;
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = W * dpr; canvas.height = H * dpr;
-      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const imgData = snapshotFn(W, H);
-      const data = imgData.data;
-      const step = 8, newP = [];
-      for (let y = 0; y < H; y += step) {
-        for (let x = 0; x < W; x += step) {
-          if (Math.random() > 0.55) continue;
-          const i = (y * W + x) * 4;
-          const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
-          if (brightness < 18) continue; // ignorar fondo negro
-          const angle = Math.atan2(y - H/2, x - W/2) + (Math.random()-0.5)*2;
-          const dist  = (0.2 + Math.random()*0.8) * Math.max(W, H) * 1.2;
-          newP.push({
-            ox: x, oy: y,
-            tx: x + Math.cos(angle)*dist, ty: y + Math.sin(angle)*dist,
-            char: CHARS[Math.random()*CHARS.length|0],
-            timer: (Math.random()*20)|0,
-            color: `rgb(${data[i]},${data[i+1]},${data[i+2]})`
-          });
-        }
-      }
-      particles = newP;
-    }
-
     return {
       render(progress) {
-        if (progress > 0 && !built) build();
+        if (progress > 0 && !built) {
+          built = true;
+          const W = window.innerWidth, H = window.innerHeight;
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width = W * dpr; canvas.height = H * dpr;
+          canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          particles = buildFn(W, H);
+        }
         const W = window.innerWidth, H = window.innerHeight;
         ctx.clearRect(0, 0, W, H);
         if (!built || progress <= 0) return;
         const t = progress * progress * (3 - 2 * progress);
-        ctx.font = '5px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.font = '7px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
         for (const p of particles) {
-          const alpha = Math.min(1, progress * 6) * Math.max(0, 1 - t * 1.1);
-          if (alpha <= 0) continue;
-          if (--p.timer <= 0) { p.char = CHARS[Math.random()*CHARS.length|0]; p.timer = (8+Math.random()*20)|0; }
+          const alpha = Math.min(1, progress * 5) * Math.max(0, 1 - t * 1.15);
+          if (alpha <= 0.01) continue;
+          if (--p.timer <= 0) { p.char = CHARS[Math.random() * CHARS.length | 0]; p.timer = (8 + Math.random() * 20) | 0; }
           ctx.globalAlpha = alpha;
           ctx.fillStyle = p.color;
-          ctx.fillText(p.char, p.ox + (p.tx - p.ox)*t, p.oy + (p.ty - p.oy)*t);
+          ctx.fillText(p.char, p.ox + (p.tx - p.ox) * t, p.oy + (p.ty - p.oy) * t);
         }
         ctx.globalAlpha = 1;
       }
     };
   }
 
-  window._workPx  = buildFromSnapshot(snapshotWork,  50);
-  window._aboutPx = buildFromSnapshot(snapshotAbout, 51);
+  window._workPx  = makeSystem(buildWorkParticles,  50);
+  window._aboutPx = makeSystem(buildAboutParticles, 51);
 })();
 
 // ─── PARTÍCULAS HERO ─────────────────────────────────────────────────────

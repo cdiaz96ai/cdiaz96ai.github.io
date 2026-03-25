@@ -608,61 +608,104 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
 (function initSectionParticles() {
   const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+-=<>?/|\\';
 
-  function buildFullScreen(el) {
+  // Dibuja el contenido real de un panel en un canvas auxiliar para muestrear píxeles
+  function snapshotWork(W, H) {
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const oc = off.getContext('2d');
+    // Tiles
+    workEl.querySelectorAll('.project-tile').forEach(tile => {
+      const r = tile.getBoundingClientRect();
+      oc.fillStyle = '#585858';
+      oc.fillRect(r.left, r.top, r.width, r.height);
+      const brand = tile.querySelector('.tile-brand');
+      const title = tile.querySelector('.tile-title');
+      oc.font = 'bold 7px monospace'; oc.textBaseline = 'alphabetic'; oc.textAlign = 'left';
+      if (brand) { oc.fillStyle = '#E8571A'; oc.fillText(brand.textContent, r.left + 10, r.bottom - 22); }
+      if (title) { oc.fillStyle = '#f0f0f0'; oc.font = 'bold 9px monospace'; oc.fillText(title.textContent, r.left + 10, r.bottom - 11); }
+    });
+    // Heading
+    const h = workEl.querySelector('.section-heading');
+    if (h) { const r = h.getBoundingClientRect(); oc.fillStyle = 'rgba(240,240,240,0.55)'; oc.font = 'bold 7px monospace'; oc.fillText('SELECTED WORKS', r.left, r.bottom); }
+    return oc.getImageData(0, 0, W, H);
+  }
+
+  function snapshotAbout(W, H) {
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const oc = off.getContext('2d');
+    oc.textBaseline = 'top'; oc.textAlign = 'left';
+    const h = aboutEl.querySelector('.section-heading');
+    if (h) { const r = h.getBoundingClientRect(); oc.fillStyle = 'rgba(240,240,240,0.55)'; oc.font = 'bold 7px monospace'; oc.fillText('ABOUT', r.left, r.top); }
+    const txt = aboutEl.querySelector('.about-text');
+    if (txt) {
+      const r = txt.getBoundingClientRect();
+      const lh = 30;
+      oc.font = '300 14px monospace';
+      [['Dirección de arte ', 'junior', '.'], ['Catadora de ramen ', 'senior', '.'], ['Chief Executive of ', 'terracitas al sol', '.']].forEach(([pre, acc, suf], i) => {
+        let cx = r.left;
+        const y = r.top + i * lh;
+        oc.fillStyle = 'rgba(240,240,240,0.75)'; oc.fillText(pre, cx, y); cx += oc.measureText(pre).width;
+        oc.fillStyle = '#E8571A'; oc.fillText(acc, cx, y); cx += oc.measureText(acc).width;
+        oc.fillStyle = 'rgba(240,240,240,0.75)'; oc.fillText(suf, cx, y);
+      });
+    }
+    return oc.getImageData(0, 0, W, H);
+  }
+
+  function buildFromSnapshot(el, snapshotFn) {
     const canvas = document.createElement('canvas');
     canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:10;';
     el.appendChild(canvas);
     const ctx = canvas.getContext('2d');
-    let particles = [];
+    let particles = [], built = false;
 
     function build() {
+      if (built) return;
+      built = true;
       const W = window.innerWidth, H = window.innerHeight;
       const dpr = window.devicePixelRatio || 1;
       canvas.width = W * dpr; canvas.height = H * dpr;
       canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const step = 12, newP = [];
+      const imgData = snapshotFn(W, H);
+      const data = imgData.data;
+      const step = 8, newP = [];
       for (let y = 0; y < H; y += step) {
         for (let x = 0; x < W; x += step) {
-          if (Math.random() > 0.5) continue; // densidad ~50%
-          const ox = x + (Math.random()-0.5)*step*0.6;
-          const oy = y + (Math.random()-0.5)*step*0.6;
-          const angle = Math.atan2(oy - H/2, ox - W/2) + (Math.random()-0.5)*1.5;
-          const dist  = (0.3 + Math.random()*0.7) * Math.max(W, H) * 1.1;
+          if (Math.random() > 0.55) continue;
+          const i = (y * W + x) * 4;
+          const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+          if (brightness < 18) continue; // ignorar fondo negro
+          const angle = Math.atan2(y - H/2, x - W/2) + (Math.random()-0.5)*2;
+          const dist  = (0.2 + Math.random()*0.8) * Math.max(W, H) * 1.2;
           newP.push({
-            ox, oy,
-            tx: ox + Math.cos(angle)*dist,
-            ty: oy + Math.sin(angle)*dist,
+            ox: x, oy: y,
+            tx: x + Math.cos(angle)*dist, ty: y + Math.sin(angle)*dist,
             char: CHARS[Math.random()*CHARS.length|0],
-            timer: (Math.random()*25)|0,
-            a: 0.25 + Math.random()*0.65
+            timer: (Math.random()*20)|0,
+            color: `rgb(${data[i]},${data[i+1]},${data[i+2]})`
           });
         }
       }
       particles = newP;
     }
 
-    build();
-    window.addEventListener('resize', build);
-
     return {
       render(progress) {
+        if (progress > 0 && !built) build();
         const W = window.innerWidth, H = window.innerHeight;
         ctx.clearRect(0, 0, W, H);
-        if (progress <= 0) return;
+        if (!built || progress <= 0) return;
         const t = progress * progress * (3 - 2 * progress);
-        ctx.font = '6px monospace';
-        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-        ctx.fillStyle = '#f0f0f0';
+        ctx.font = '5px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
         for (const p of particles) {
-          const alpha = p.a * Math.min(1, progress * 8) * Math.max(0, 1 - t * 1.3);
+          const alpha = Math.min(1, progress * 8) * Math.max(0, 1 - t * 1.3);
           if (alpha <= 0) continue;
-          if (--p.timer <= 0) {
-            p.char  = CHARS[Math.random()*CHARS.length|0];
-            p.timer = (8 + Math.random()*25)|0;
-          }
+          if (--p.timer <= 0) { p.char = CHARS[Math.random()*CHARS.length|0]; p.timer = (8+Math.random()*20)|0; }
           ctx.globalAlpha = alpha;
+          ctx.fillStyle = p.color;
           ctx.fillText(p.char, p.ox + (p.tx - p.ox)*t, p.oy + (p.ty - p.oy)*t);
         }
         ctx.globalAlpha = 1;
@@ -670,8 +713,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     };
   }
 
-  window._workPx  = buildFullScreen(workEl);
-  window._aboutPx = buildFullScreen(aboutEl);
+  window._workPx  = buildFromSnapshot(workEl,  snapshotWork);
+  window._aboutPx = buildFromSnapshot(aboutEl, snapshotAbout);
 })();
 
 // ─── PARTÍCULAS HERO ─────────────────────────────────────────────────────

@@ -141,12 +141,18 @@ const imagePool = imageSrcs.map(src => {
 let currentIndex = 0;
 let lastMove = 0;
 
+// Desactivamos las imágenes cuando el hero deja de estar visible en pantalla
+let heroVisible = true;
+const heroObserver = new IntersectionObserver(
+  ([entry]) => { heroVisible = entry.isIntersecting; },
+  { threshold: 0.05 }
+);
+heroObserver.observe(hero);
+
 hero.addEventListener("mousemove", (e) => {
   const now = Date.now();
   if (now - lastMove < 140) return;
-  // Solo mostramos imágenes si el hero todavía es visible
-  const progress = Math.min(currentScroll / (window.innerHeight * 0.4), 1);
-  if (progress >= 1) return;
+  if (!heroVisible) return;
   lastMove = now;
 
   const rect = hero.getBoundingClientRect();

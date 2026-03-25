@@ -692,16 +692,16 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       if (mouseX !== null && t < 0.2) {
         const dx = p.cx - mouseX, dy = p.cy - mouseY;
         const d2 = dx * dx + dy * dy;
-        const R = 90;
+        const R = 140;
         if (d2 < R * R && d2 > 0) {
           const d = Math.sqrt(d2);
-          const force = ((R - d) / R) * 5;
+          const force = ((R - d) / R) * 14;
           p.vx += (dx / d) * force;
           p.vy += (dy / d) * force;
         }
       }
 
-      p.vx *= 0.82; p.vy *= 0.82;
+      p.vx *= 0.88; p.vy *= 0.88;
       p.cx += p.vx; p.cy += p.vy;
 
       const alpha = Math.max(0, 1 - t * 1.4);

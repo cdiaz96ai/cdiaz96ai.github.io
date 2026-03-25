@@ -392,3 +392,31 @@ nav {
   });
 
   let currentIndex = 0, lastMove = 0;
+
+  heroPanel.addEventListener('mousemove', e => {
+    const now = Date.now();
+    if (now - lastMove < 140) return;
+    if (window.scrollY > window.innerWidth * 0.2) return;
+    lastMove = now;
+
+    const rect = heroPanel.getBoundingClientRect();
+    const img  = imagePool[currentIndex].cloneNode();
+    heroPanel.appendChild(img);
+    img.style.left = (e.clientX - rect.left) + 'px';
+    img.style.top  = (e.clientY - rect.top)  + 'px';
+
+    requestAnimationFrame(() => {
+      img.style.opacity   = '1';
+      img.style.transform = 'scale(1)';
+    });
+    setTimeout(() => {
+      img.style.opacity   = '0';
+      img.style.transform = 'scale(0.95)';
+      setTimeout(() => img.remove(), 400);
+    }, 800);
+
+    currentIndex = (currentIndex + 1) % imagePool.length;
+  });
+</script>
+</body>
+</html>

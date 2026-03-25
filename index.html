@@ -54,21 +54,21 @@ html, body {
 /* ─── WORK ─── */
 #work {
   z-index: 2; background: var(--bg-alt); display: flex; flex-direction: column;
-  padding: 80px 64px; transform: translateX(100vw); will-change: transform, filter;
+  padding: 80px 64px; transform: scale(0.88); opacity: 0; will-change: transform, filter, opacity;
 }
 #work::before { content: ""; position: absolute; top: 0; left: 0; width: 0.5px; height: 100%; background: var(--line); }
 
 /* ─── ABOUT ─── */
 #about {
   z-index: 3; background: var(--bg); display: flex; flex-direction: column;
-  justify-content: center; padding: 80px 64px; transform: translateX(100vw); will-change: transform, filter;
+  justify-content: center; padding: 80px 64px; transform: scale(0.88); opacity: 0; will-change: transform, filter, opacity;
 }
 #about::before { content: ""; position: absolute; top: 0; left: 0; width: 0.5px; height: 100%; background: var(--line); }
 
 /* ─── CONTACT ─── */
 #contact {
   z-index: 4; background: var(--bg-alt); display: flex; align-items: center;
-  justify-content: center; flex-direction: column; gap: 20px; transform: translateX(100vw); will-change: transform;
+  justify-content: center; flex-direction: column; gap: 20px; transform: scale(0.88); opacity: 0; will-change: transform, opacity;
 }
 #contact::before { content: ""; position: absolute; top: 0; left: 0; width: 0.5px; height: 100%; background: var(--line); }
 
@@ -542,16 +542,23 @@ window.addEventListener('scroll', () => {
 function animate() {
   currentScroll += (targetScroll - currentScroll) * 0.05;
   const s = currentScroll, W = window.innerWidth, T = TRANS * W;
+
   const wP = clamp(s / T, 0, 1);
-  workEl.style.transform  = `translateX(${(1 - wP) * 100}vw)`;
+  workEl.style.transform  = `scale(${0.88 + wP * 0.12})`;
+  workEl.style.opacity    = wP;
   heroInner.style.filter  = `blur(${wP * 16}px)`;
-  window._particleWP = wP;
+  window._particleWP      = wP;
+
   const aP = clamp((s - W) / T, 0, 1);
-  aboutEl.style.transform = `translateX(${(1 - aP) * 100}vw)`;
+  aboutEl.style.transform = `scale(${0.88 + aP * 0.12})`;
+  aboutEl.style.opacity   = aP;
   workEl.style.filter     = `blur(${aP * 16}px)`;
+
   const cP = clamp((s - 2 * W) / T, 0, 1);
-  contactEl.style.transform = `translateX(${(1 - cP) * 100}vw)`;
+  contactEl.style.transform = `scale(${0.88 + cP * 0.12})`;
+  contactEl.style.opacity   = cP;
   aboutEl.style.filter      = `blur(${cP * 16}px)`;
+
   if (Math.abs(targetScroll - currentScroll) > 0.3) requestAnimationFrame(animate);
   else animating = false;
 }

@@ -232,7 +232,7 @@ nav {
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">Carlota Díaz</div>
+  <div class="nav-logo">Madrid &nbsp;<span id="clock-hm"></span><span id="clock-s" style="color:var(--accent)"></span><span id="clock-ap"></span></div>
   <div class="nav-links">
     <a href="#work">Work</a>
     <a href="#about">About</a>
@@ -523,6 +523,20 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     if (idx !== undefined) window.scrollTo({ top: idx * window.innerWidth, behavior: 'smooth' });
   });
 });
+
+// ─── RELOJ MADRID ────────────────────────────────────────────────────────
+(function updateClock() {
+  const now  = new Date();
+  const hm   = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit', hour12: true });
+  const secs = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Madrid', second: '2-digit', hour12: false }).padStart(2, '0');
+  const ap   = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Madrid', hour: 'numeric', hour12: true }).slice(-2).toLowerCase();
+  // hm viene como "06:37 AM" — nos quedamos solo con "06:37:"
+  const hmClean = hm.replace(/\s*(AM|PM)/i, '');
+  document.getElementById('clock-hm').textContent = hmClean + ':';
+  document.getElementById('clock-s').textContent  = secs;
+  document.getElementById('clock-ap').textContent = ' ' + ap;
+  setTimeout(updateClock, 1000);
+})();
 
 // ─── CURSOR IMAGES EN HERO ────────────────────────────────────────────────
 const imageSrcs = [

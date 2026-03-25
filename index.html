@@ -104,10 +104,21 @@ html, body {
 .about-text { max-width: 480px; font-size: 1.05rem; line-height: 1.8; font-weight: 300; color: rgba(240,240,240,0.75); }
 
 /* ─── CONTACT LINK ─── */
+/* ─── CONTACT HEADING ─── */
+.contact-heading {
+  font-size: 1.05rem; font-weight: 300; line-height: 1.8; color: var(--text);
+  margin-bottom: 32px;
+}
+#contact-word {
+  color: var(--accent); font-weight: 400;
+  transition: opacity 0.4s ease;
+}
+#contact-word.fade { opacity: 0; }
+
 .contact-link {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(1.2rem, 3vw, 2.2rem);
-  text-decoration: none; color: var(--text); border-bottom: 1px solid var(--line);
-  padding-bottom: 6px; transition: border-color 0.3s ease, color 0.3s ease; letter-spacing: -0.02em;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 400; font-size: 1.05rem;
+  text-decoration: none; color: rgba(240,240,240,0.75); border-bottom: 1px solid var(--line);
+  padding-bottom: 4px; transition: border-color 0.3s ease, color 0.3s ease;
 }
 .contact-link:hover { color: var(--accent); border-color: var(--accent); }
 .contact-footer { margin-top: 28px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
@@ -310,6 +321,7 @@ nav {
 
   <!-- 3: CONTACT -->
   <div id="contact" class="panel">
+    <p class="contact-heading">Vamos a tomarnos un <span id="contact-word">café</span></p>
     <a class="contact-link" href="mailto:carlota.diaz.pilas@gmail.com">Email</a>
     <a class="contact-link" href="https://www.linkedin.com/in/carlota-d%C3%ADaz-pilas-168a85235" target="_blank" rel="noopener">LinkedIn</a>
     <p class="contact-footer">© Carlota Díaz</p>
@@ -595,6 +607,21 @@ heroPanel.addEventListener('mousemove', e => {
   setTimeout(() => { img.style.opacity = '0'; img.style.transform = 'scale(0.95)'; setTimeout(() => img.remove(), 400); }, 800);
   currentIndex = (currentIndex + 1) % imagePool.length;
 });
+
+// ─── PALABRA GIRATORIA EN CONTACT ────────────────────────────────────────
+(function cycleContactWord() {
+  const words = ['café', 'vino', 'colacao', 'cerveza', 'té', 'agüita'];
+  const el = document.getElementById('contact-word');
+  let i = 0;
+  setInterval(() => {
+    el.classList.add('fade');
+    setTimeout(() => {
+      i = (i + 1) % words.length;
+      el.textContent = words[i];
+      el.classList.remove('fade');
+    }, 400);
+  }, 2800);
+})();
 </script>
 </body>
 </html>

@@ -551,6 +551,7 @@ function animate() {
   const wP = clamp(s / T, 0, 1);
   workEl.style.transform  = `translateX(${(1 - wP) * 100}vw)`;
   heroInner.style.filter  = `blur(${wP * 16}px)`;
+  if (window._renderParticles) window._renderParticles(wP);
   const aP = clamp((s - W) / T, 0, 1);
   aboutEl.style.transform = `translateX(${(1 - aP) * 100}vw)`;
   workEl.style.filter     = `blur(${aP * 16}px)`;
@@ -622,6 +623,85 @@ heroPanel.addEventListener('mousemove', e => {
       el.classList.remove('fade');
     }, 400);
   }, 2800);
+})();
+
+// ─── PARTÍCULAS HERO ─────────────────────────────────────────────────────
+(function initParticleHero() {
+  const heroTitle = document.querySelector('.text-display-xl');
+  const heroSub   = document.querySelector('.hero-sub');
+
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:3;';
+  heroPanel.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  let particles = [], ready = false;
+
+  function build() {
+    const W = window.innerWidth, H = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Canvas auxiliar para muestrear los píxeles del texto
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const oc = off.getContext('2d');
+    const fs = parseFloat(window.getComputedStyle(heroTitle).fontSize);
+    oc.font = `800 ${fs}px Syne, sans-serif`;
+    oc.letterSpacing = '-0.04em';
+    oc.textAlign = 'center';
+    oc.textBaseline = 'middle';
+    oc.fillStyle = '#fff';
+    oc.fillText('CARLOTA DÍAZ', W / 2, H / 2);
+
+    const data = oc.getImageData(0, 0, W, H).data;
+    particles = [];
+    const step = 4;
+    for (let y = 0; y < H; y += step) {
+      for (let x = 0; x < W; x += step) {
+        if (data[(y * W + x) * 4 + 3] > 80) {
+          const angle = Math.atan2(y - H / 2, x - W / 2) + (Math.random() - 0.5) * 2.5;
+          const dist  = (0.15 + Math.random() * 0.85) * Math.max(W, H) * 1.2;
+          particles.push({
+            ox: x, oy: y,
+            tx: x + Math.cos(angle) * dist,
+            ty: y + Math.sin(angle) * dist,
+            r:  Math.random() * 1.2 + 0.4
+          });
+        }
+      }
+    }
+    heroTitle.style.opacity = '0';
+    ready = true;
+  }
+
+  document.fonts.ready.then(build);
+  window.addEventListener('resize', build);
+
+  window._renderParticles = function(wP) {
+    if (!ready) return;
+    const W = window.innerWidth, H = window.innerHeight;
+    ctx.clearRect(0, 0, W, H);
+    // smoothstep para movimiento más orgánico
+    const t = wP * wP * (3 - 2 * wP);
+    ctx.fillStyle = '#f0f0f0';
+    for (const p of particles) {
+      const alpha = Math.max(0, 1 - t * 1.4);
+      if (alpha <= 0) continue;
+      ctx.globalAlpha = alpha;
+      const x = p.ox + (p.tx - p.ox) * t;
+      const y = p.oy + (p.ty - p.oy) * t;
+      ctx.beginPath();
+      ctx.arc(x, y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
+  };
 })();
 </script>
 </body>

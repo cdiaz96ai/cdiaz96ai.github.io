@@ -650,7 +650,13 @@ heroPanel.addEventListener('mousemove', e => {
     const off = document.createElement('canvas');
     off.width = W; off.height = H;
     const oc = off.getContext('2d');
-    const fs = parseFloat(window.getComputedStyle(heroTitle).fontSize);
+    // Ajustar font size para que el texto no se corte
+    let fs = parseFloat(window.getComputedStyle(heroTitle).fontSize);
+    oc.font = `800 ${fs}px Syne, sans-serif`;
+    const measured = oc.measureText('CARLOTA DÍAZ');
+    if (measured.width > W * 0.92) fs = fs * (W * 0.92 / measured.width);
+
+    oc.clearRect(0, 0, W, H);
     oc.font = `800 ${fs}px Syne, sans-serif`;
     oc.letterSpacing = '-0.04em';
     oc.textAlign = 'center';
@@ -675,7 +681,6 @@ heroPanel.addEventListener('mousemove', e => {
         }
       }
     }
-    heroTitle.style.opacity = '0';
     ready = true;
   }
 
@@ -686,6 +691,13 @@ heroPanel.addEventListener('mousemove', e => {
     if (!ready) return;
     const W = window.innerWidth, H = window.innerHeight;
     ctx.clearRect(0, 0, W, H);
+    // Mientras no hay scroll, mostrar texto HTML normal
+    if (wP < 0.01) {
+      heroTitle.style.opacity = '1';
+      heroSub.style.opacity   = '1';
+      return;
+    }
+    heroTitle.style.opacity = '0';
     // smoothstep para movimiento más orgánico
     const t = wP * wP * (3 - 2 * wP);
     ctx.fillStyle = '#f0f0f0';

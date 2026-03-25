@@ -519,8 +519,15 @@ const contactEl   = document.getElementById('contact');
 const scrollTrack = document.getElementById('scroll-track');
 const TRANS = 0.65;
 
+// En móvil usamos innerHeight×2 como unidad de scroll para que las
+// transiciones requieran más recorrido y no se disparen por momentum.
+function scrollUnit() {
+  return window.innerWidth < 768 ? window.innerHeight * 2 : window.innerWidth;
+}
+
 function setTrackHeight() {
-  scrollTrack.style.height = (3 * window.innerWidth + window.innerHeight) + 'px';
+  const SU = scrollUnit();
+  scrollTrack.style.height = (3 * SU + window.innerHeight) + 'px';
 }
 setTrackHeight();
 window.addEventListener('resize', setTrackHeight);
@@ -531,13 +538,13 @@ let targetScroll = 0, currentScroll = 0, animating = false;
 
 window.addEventListener('scroll', () => {
   let sy = window.scrollY;
-  const W = window.innerWidth;
+  const SU = scrollUnit();
   // Móvil: no avanzar a About hasta haber llegado al fondo de Work
-  if (W < 768 && sy > W) {
+  if (window.innerWidth < 768 && sy > SU) {
     const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 10;
     if (!workAtBottom) {
-      window.scrollTo({ top: W, behavior: 'instant' });
-      sy = W;
+      window.scrollTo({ top: SU, behavior: 'instant' });
+      sy = SU;
     }
   }
   targetScroll = sy;
@@ -550,12 +557,12 @@ if ('ontouchstart' in window) {
   document.addEventListener('touchstart', e => { _ty = e.touches[0].clientY; }, { passive: true });
   document.addEventListener('touchmove', e => {
     if (window.innerWidth >= 768) return;
-    const W = window.innerWidth;
+    const SU = scrollUnit();
     const sy = window.scrollY;
     const dy = _ty - e.touches[0].clientY;
     _ty = e.touches[0].clientY;
     // Work activa, bajando, y no llegó al fondo
-    if (sy >= W * TRANS * 0.7 && dy > 0) {
+    if (sy >= SU * TRANS * 0.7 && dy > 0) {
       const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 5;
       if (!workAtBottom) {
         e.preventDefault();
@@ -567,14 +574,16 @@ if ('ontouchstart' in window) {
 
 function animate() {
   currentScroll += (targetScroll - currentScroll) * 0.05;
-  const s = currentScroll, W = window.innerWidth, T = TRANS * W;
+  const s = currentScroll;
+  const SU = scrollUnit();
+  const T = TRANS * SU;
 
   const wP = clamp(s / T, 0, 1);
-  const aP = clamp((s - W) / T, 0, 1);
-  const cP = clamp((s - 2 * W) / T, 0, 1);
+  const aP = clamp((s - SU) / T, 0, 1);
+  const cP = clamp((s - 2 * SU) / T, 0, 1);
 
   // Móvil: resetear scroll de Work cuando el usuario vuelve al hero
-  if (W < 768 && wP < 0.05) workEl.scrollTop = 0;
+  if (window.innerWidth < 768 && wP < 0.05) workEl.scrollTop = 0;
 
   // Work: zoom in, luego desaparece (partículas toman el relevo)
   workEl.style.transform     = `scale(${0.15 + wP * 0.85})`;
@@ -607,7 +616,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
     const idx = sectionMap[link.getAttribute('href').slice(1)];
-    if (idx !== undefined) window.scrollTo({ top: idx * window.innerWidth, behavior: 'smooth' });
+    if (idx !== undefined) window.scrollTo({ top: idx * scrollUnit(), behavior: 'smooth' });
   });
 });
 

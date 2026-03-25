@@ -530,9 +530,40 @@ function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
 let targetScroll = 0, currentScroll = 0, animating = false;
 
 window.addEventListener('scroll', () => {
-  targetScroll = window.scrollY;
+  let sy = window.scrollY;
+  const W = window.innerWidth;
+  // Móvil: no avanzar a About hasta haber llegado al fondo de Work
+  if (W < 768 && sy > W) {
+    const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 10;
+    if (!workAtBottom) {
+      window.scrollTo({ top: W, behavior: 'instant' });
+      sy = W;
+    }
+  }
+  targetScroll = sy;
   if (!animating) { animating = true; requestAnimationFrame(animate); }
 });
+
+// Móvil: redirigir scroll táctil a Work cuando no ha llegado al fondo
+if ('ontouchstart' in window) {
+  let _ty = 0;
+  document.addEventListener('touchstart', e => { _ty = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (window.innerWidth >= 768) return;
+    const W = window.innerWidth;
+    const sy = window.scrollY;
+    const dy = _ty - e.touches[0].clientY;
+    _ty = e.touches[0].clientY;
+    // Work activa, bajando, y no llegó al fondo
+    if (sy >= W * TRANS * 0.7 && dy > 0) {
+      const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 5;
+      if (!workAtBottom) {
+        e.preventDefault();
+        workEl.scrollTop += dy;
+      }
+    }
+  }, { passive: false });
+}
 
 function animate() {
   currentScroll += (targetScroll - currentScroll) * 0.05;

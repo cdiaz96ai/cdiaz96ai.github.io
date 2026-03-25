@@ -64,7 +64,7 @@ body { scroll-behavior: smooth; }
   background: #ffffff;
   transform: translateY(30vh);
   padding: 120px 40px;
-  will-change: transform;
+  will-change: transform, filter;
 }
 
 #work::before {
@@ -75,6 +75,32 @@ body { scroll-behavior: smooth; }
   width: 100%;
   height: 0.5px;
   background: rgba(0,0,0,0.5);
+}
+
+/* About entra igual que work: empieza desplazada hacia abajo y sube encima */
+#about {
+  position: relative;
+  z-index: 30;
+  background: #f9f9f9;
+  transform: translateY(30vh);
+  padding: 160px 40px;
+  will-change: transform;
+}
+
+#about::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0.5px;
+  background: rgba(0,0,0,0.5);
+}
+
+#contact {
+  position: relative;
+  z-index: 40;
+  background: #f9f9f9;
 }
 </style>
 </head>
@@ -104,7 +130,10 @@ body { scroll-behavior: smooth; }
     <p>Contenido...</p>
   </section>
 
-  <section id="about" class="py-40 px-8">About</section>
+  <section id="about">
+    <h2 class="text-4xl font-bold mb-10">About</h2>
+    <p>Contenido about...</p>
+  </section>
 
   <section id="contact" class="py-40 px-8 text-center">
     <a href="mailto:hello@carlotadiaz.ai">hello@carlotadiaz.ai</a>
@@ -118,6 +147,7 @@ body { scroll-behavior: smooth; }
 const hero = document.querySelector("#hero");
 const heroInner = document.querySelector("#hero-inner");
 const work = document.querySelector("#work");
+const about = document.querySelector("#about");
 
 const imageSrcs = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
@@ -151,7 +181,6 @@ hero.addEventListener("mousemove", (e) => {
   lastMove = now;
 
   const rect = hero.getBoundingClientRect();
-
   const img = imagePool[currentIndex].cloneNode();
   hero.appendChild(img);
 
@@ -187,10 +216,19 @@ window.addEventListener("scroll", () => {
 function animate() {
   currentScroll += (targetScroll - currentScroll) * 0.08;
 
-  const progress = Math.min(currentScroll / (window.innerHeight * 0.4), 1);
+  const vh = window.innerHeight;
 
-  heroInner.style.filter = `blur(${progress * 20}px)`;
-  work.style.transform = `translateY(${30 - progress * 30}vh)`;
+  // — Tramo 1: hero → work (igual que antes) —
+  const progress1 = Math.min(currentScroll / (vh * 0.4), 1);
+  heroInner.style.filter = `blur(${progress1 * 20}px)`;
+  work.style.transform = `translateY(${30 - progress1 * 30}vh)`;
+
+  // — Tramo 2: work → about —
+  // Empieza cuando work ya está asentado, usa la posición top de work como referencia
+  const workTop = work.getBoundingClientRect().top + currentScroll;
+  const progress2 = Math.min(Math.max((currentScroll - workTop * 0.5) / (vh * 0.6), 0), 1);
+  work.style.filter = `blur(${progress2 * 20}px)`;
+  about.style.transform = `translateY(${30 - progress2 * 30}vh)`;
 
   if (Math.abs(targetScroll - currentScroll) > 0.5) {
     requestAnimationFrame(animate);
@@ -202,4 +240,3 @@ function animate() {
 
 </body>
 </html>
-

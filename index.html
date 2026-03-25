@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html class="light" lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Carlota Díaz — Art Director especializada en IA. Portfolio de proyectos seleccionados."/>
+<meta property="og:title" content="Carlota Díaz — AI Art Direction"/>
+<meta property="og:description" content="Art Director especializada en IA. Portfolio de proyectos seleccionados."/>
+<meta property="og:type" content="website"/>
 <title>Carlota Díaz — AI Art Direction</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
@@ -37,23 +41,33 @@ body { scroll-behavior: smooth; }
   top: 0;
   height: 100vh;
   z-index: 10;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
+}
+
+/* Capa interna del hero para aislar el blur en su propio layer GPU */
+#hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  will-change: filter;
 }
 
 #work {
   position: relative;
   z-index: 20;
   background: #ffffff;
-  transform: translateY(30vh); /* 🔥 empieza casi visible */
+  transform: translateY(30vh);
   padding: 120px 40px;
   will-change: transform;
 }
 
-/* línea fina */
 #work::before {
   content: "";
   position: absolute;
@@ -69,31 +83,34 @@ body { scroll-behavior: smooth; }
 <body class="bg-[#f9f9f9] text-black">
 
 <nav class="fixed top-0 w-full z-50 bg-[#f9f9f9]/80 backdrop-blur-xl flex justify-between px-8 py-6">
-<div class="font-bold">Carlota Díaz</div>
-<div class="flex gap-6">
-<a href="#work">Work</a>
-<a href="#about">About</a>
-<a href="#contact">Contact</a>
-</div>
+  <div class="font-bold">Carlota Díaz</div>
+  <div class="flex gap-6">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
 </nav>
 
 <main>
 
-<section id="hero">
-<h1 class="text-display-xl font-extrabold uppercase">Carlota Díaz</h1>
-<p class="mt-4 uppercase tracking-widest">Art Director — AI</p>
-</section>
+  <section id="hero">
+    <!-- Capa interna: el blur se aplica aquí, aislado en su propio layer GPU -->
+    <div id="hero-inner">
+      <h1 class="text-display-xl font-extrabold uppercase">Carlota Díaz</h1>
+      <p class="mt-4 uppercase tracking-widest">Art Director — AI</p>
+    </div>
+  </section>
 
-<section id="work">
-<h2 class="text-4xl font-bold mb-10">Selected Works</h2>
-<p>Contenido...</p>
-</section>
+  <section id="work">
+    <h2 class="text-4xl font-bold mb-10">Selected Works</h2>
+    <p>Contenido...</p>
+  </section>
 
-<section id="about" class="py-40 px-8">About</section>
+  <section id="about" class="py-40 px-8">About</section>
 
-<section id="contact" class="py-40 px-8 text-center">
-<a href="mailto:hello@carlotadiaz.ai">hello@carlotadiaz.ai</a>
-</section>
+  <section id="contact" class="py-40 px-8 text-center">
+    <a href="mailto:hello@carlotadiaz.ai">hello@carlotadiaz.ai</a>
+  </section>
 
 </main>
 
@@ -101,30 +118,38 @@ body { scroll-behavior: smooth; }
 
 <script>
 const hero = document.querySelector("#hero");
+const heroInner = document.querySelector("#hero-inner");
 const work = document.querySelector("#work");
 
-// cursor
-const images = [
+// Pool de imágenes precargadas: se crean una sola vez y se reutilizan
+const imageSrcs = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuD5apwWXgN2Kp2lfA7Nje1FNB3_7yYiqn07SHdnGlWlEKF_L5YWWwpp2vtu6VS_2q-Mj4UDMYW1-f580VKY67tf_GQrAewvf8jD0Onsq5Z9ow86S7otBE97mClBVbBzkj_QOZqK5ENhpcUJBcQibd7M0iK5MnSZG5bekubIhhvKcOBrnuERN7-yishRTKxEOKowFU1jFRcWsd4xb7whxkB35N9u2iRsv1Bpa1Q8Jcf0TtLfHqosfx8tK_lbu-LFIn8M3LNdqv__s2g"
 ];
 
+// Precargamos las imágenes al inicio para evitar carga bajo demanda
+const imagePool = imageSrcs.map(src => {
+  const img = new Image();
+  img.src = src;
+  img.className = "cursor-image";
+  img.width = 150;
+  img.height = 200;
+  return img;
+});
+
 let currentIndex = 0;
 let lastMove = 0;
 
 hero.addEventListener("mousemove", (e) => {
-
   const now = Date.now();
   if (now - lastMove < 140) return;
   lastMove = now;
 
   const rect = hero.getBoundingClientRect();
 
-  const img = document.createElement("img");
-  img.src = images[currentIndex];
-  img.className = "cursor-image";
-
+  // Clonamos del pool en vez de crear elementos nuevos cada vez
+  const img = imagePool[currentIndex].cloneNode();
   hero.appendChild(img);
 
   img.style.left = (e.clientX - rect.left) + "px";
@@ -141,33 +166,39 @@ hero.addEventListener("mousemove", (e) => {
     setTimeout(() => img.remove(), 300);
   }, 750);
 
-  currentIndex = (currentIndex + 1) % images.length;
+  currentIndex = (currentIndex + 1) % imagePool.length;
 });
 
-// scroll suave
+// Scroll suave
 let targetScroll = 0;
 let currentScroll = 0;
+let animating = false;
 
 window.addEventListener("scroll", () => {
   targetScroll = window.scrollY;
+  // Arrancamos el loop solo si no está ya corriendo
+  if (!animating) {
+    animating = true;
+    requestAnimationFrame(animate);
+  }
 });
 
 function animate() {
-
   currentScroll += (targetScroll - currentScroll) * 0.08;
 
-  // 🔥 rango corto y directo
   const progress = Math.min(currentScroll / (window.innerHeight * 0.4), 1);
 
-  hero.style.filter = `blur(${progress * 20}px)`;
-
-  // 🔥 movimiento corto → aparece rápido
+  // Blur aplicado al hero-inner (layer GPU aislado), no al hero completo
+  heroInner.style.filter = `blur(${progress * 20}px)`;
   work.style.transform = `translateY(${30 - progress * 30}vh)`;
 
-  requestAnimationFrame(animate);
+  // Paramos el loop cuando el scroll ya está asentado (ahorro de CPU)
+  if (Math.abs(targetScroll - currentScroll) > 0.5) {
+    requestAnimationFrame(animate);
+  } else {
+    animating = false;
+  }
 }
-
-animate();
 </script>
 
 </body>

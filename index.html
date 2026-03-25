@@ -51,7 +51,38 @@ html, body {
   margin-top: 20px; font-weight: 300; font-size: 0.75rem;
   text-transform: uppercase; letter-spacing: 0.3em; color: var(--accent);
 }
-@media (max-width: 768px) { .text-display-xl { font-size: 4rem; } }
+@media (max-width: 768px) {
+  /* NAV */
+  nav { padding: 14px 20px; }
+  .nav-logo { font-size: 0.72rem; }
+  .nav-links { gap: 14px; }
+  .nav-links a { font-size: 0.62rem; letter-spacing: 0.1em; }
+
+  /* HERO */
+  .text-display-xl { font-size: 3rem; }
+  .hero-sub { font-size: 0.65rem; letter-spacing: 0.2em; }
+
+  /* WORK */
+  #work { padding: 72px 16px 16px; }
+  .section-heading { margin-bottom: 16px; }
+  #work-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr); }
+  .tile-info { opacity: 1; transform: translateY(0); } /* siempre visible en móvil */
+
+  /* ABOUT */
+  #about { padding: 72px 24px; }
+  .about-text { font-size: 0.95rem; }
+
+  /* CONTACT */
+  .contact-link { font-size: clamp(1rem, 5vw, 1.8rem); }
+
+  /* DETAIL */
+  .detail-inner { padding: 40px 56px; }
+  #detail-side-prev { left: 6px; }
+  #detail-side-next { right: 6px; }
+  .detail-side-arrow { width: 40px; height: 40px; }
+  .detail-side-arrow svg { width: 14px; height: 14px; }
+  #detail-topbar { padding: 14px 20px; }
+}
 
 /* ─── WORK ─── */
 #work {
@@ -182,8 +213,8 @@ nav {
 }
 
 /* El inner no necesita animación propia — la hace el canvas */
-#detail-inner {
-  padding: 64px;
+.detail-inner {
+  padding: 64px 104px;
   display: flex; flex-direction: column; gap: 40px;
   max-width: 1100px;
 }
@@ -351,7 +382,7 @@ function buildScrollDiv(idx) {
   div.style.cssText = 'position:absolute;inset:0;overflow-y:auto;';
 
   const inner = document.createElement('div');
-  inner.style.cssText = 'padding:64px 104px;display:flex;flex-direction:column;gap:40px;max-width:1100px;';
+  inner.className = 'detail-inner';
 
   // Cabecera
   const header = document.createElement('div');

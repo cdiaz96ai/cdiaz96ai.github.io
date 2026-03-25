@@ -550,12 +550,14 @@ function animate() {
   aboutEl.style.opacity      = aP;
   aboutEl.style.pointerEvents = aP > 0.5 ? 'auto' : 'none';
   workEl.style.filter        = `blur(${aP * 16}px)`;
+  if (window._workPx)  window._workPx.render(aP);
 
   const cP = clamp((s - 2 * W) / T, 0, 1);
   contactEl.style.transform    = `scale(${0.15 + cP * 0.85})`;
   contactEl.style.opacity      = cP;
   contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
   aboutEl.style.filter         = `blur(${cP * 16}px)`;
+  if (window._aboutPx) window._aboutPx.render(cP);
 
   if (Math.abs(targetScroll - currentScroll) > 0.3) requestAnimationFrame(animate);
   else animating = false;
@@ -600,6 +602,89 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       el.classList.remove('fade');
     }, 400);
   }, 2800);
+})();
+
+// ─── PARTÍCULAS DE SECCIÓN (Work → About, About → Contact) ───────────────
+(function initSectionParticles() {
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+-=<>?/|\\';
+
+  function buildTextParticles(el, text) {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:10;';
+    el.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function build() {
+      const W = window.innerWidth, H = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const off = document.createElement('canvas');
+      off.width = W; off.height = H;
+      const oc = off.getContext('2d');
+      let fs = Math.min(W * 0.18, 160);
+      oc.font = `800 ${fs}px Syne, sans-serif`;
+      const m = oc.measureText(text);
+      if (m.width > W * 0.85) fs *= (W * 0.85 / m.width);
+      oc.font = `800 ${fs}px Syne, sans-serif`;
+      oc.textAlign = 'center'; oc.textBaseline = 'middle';
+      oc.fillStyle = '#fff';
+      oc.fillText(text, W / 2, H / 2);
+
+      const data = oc.getImageData(0, 0, W, H).data;
+      const newP = [], step = 5;
+      for (let y = 0; y < H; y += step) {
+        for (let x = 0; x < W; x += step) {
+          if (data[(y * W + x) * 4 + 3] > 80) {
+            const angle = Math.atan2(y - H/2, x - W/2) + (Math.random()-0.5)*2.5;
+            const dist = (0.15 + Math.random()*0.85) * Math.max(W, H) * 1.2;
+            newP.push({
+              ox: x, oy: y,
+              tx: x + Math.cos(angle)*dist, ty: y + Math.sin(angle)*dist,
+              char: CHARS[Math.random()*CHARS.length|0],
+              timer: (Math.random()*20)|0
+            });
+          }
+        }
+      }
+      particles = newP;
+    }
+
+    document.fonts.ready.then(build);
+    window.addEventListener('resize', build);
+
+    return {
+      render(progress) {
+        const W = window.innerWidth, H = window.innerHeight;
+        ctx.clearRect(0, 0, W, H);
+        if (progress <= 0) return;
+        const t = progress * progress * (3 - 2 * progress);
+        ctx.font = '5px monospace';
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillStyle = '#f0f0f0';
+        for (const p of particles) {
+          const appear = Math.min(1, progress * 12);
+          const alpha = appear * Math.max(0, 1 - t * 1.4);
+          if (alpha <= 0) continue;
+          const x = p.ox + (p.tx - p.ox) * t;
+          const y = p.oy + (p.ty - p.oy) * t;
+          if (--p.timer <= 0) {
+            p.char = CHARS[Math.random()*CHARS.length|0];
+            p.timer = (8 + Math.random()*20)|0;
+          }
+          ctx.globalAlpha = alpha;
+          ctx.fillText(p.char, x, y);
+        }
+        ctx.globalAlpha = 1;
+      }
+    };
+  }
+
+  window._workPx  = buildTextParticles(workEl,  'WORK');
+  window._aboutPx = buildTextParticles(aboutEl, 'ABOUT');
 })();
 
 // ─── PARTÍCULAS HERO ─────────────────────────────────────────────────────

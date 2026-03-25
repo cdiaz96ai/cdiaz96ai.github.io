@@ -779,7 +779,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     oc.fillText('CARLOTA DÍAZ', W / 2, H / 2);
 
     const data = oc.getImageData(0, 0, W, H).data;
-    const step = 6, newP = [];
+    const isMobile = W < 768;
+    const step = isMobile ? 3 : 6, newP = [];
     for (let y = 0; y < H; y += step) {
       for (let x = 0; x < W; x += step) {
         if (data[(y * W + x) * 4 + 3] > 80) {
@@ -814,7 +815,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
 
     ctx.clearRect(0, 0, W, H);
-    ctx.font = '5px monospace';
+    ctx.font = `${window.innerWidth < 768 ? 2 : 5}px monospace`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillStyle = '#f0f0f0';

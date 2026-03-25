@@ -8,46 +8,56 @@
 <meta property="og:description" content="Art Director especializada en IA. Portfolio de proyectos seleccionados."/>
 <meta property="og:type" content="website"/>
 <title>Carlota Díaz — AI Art Direction</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-
 <style>
-body { scroll-behavior: smooth; }
-
-.text-display-xl {
-  font-size: 8rem;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  /* overflow-y lo gestiona el scroll-track */
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f9f9f9;
+  color: black;
 }
 
-@media (max-width: 768px) {
-  .text-display-xl { font-size: 4rem; }
+/* El "rail" invisible que da altura a la página para que el scroll funcione */
+#scroll-track {
+  position: relative;
+  z-index: 0;
+  /* altura = se calcula en JS */
 }
 
-.cursor-image {
-  position: absolute;
-  width: 150px;
-  height: 200px;
-  pointer-events: none;
-  z-index: 5;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-
-#hero {
-  position: sticky;
+/* El stage es fixed: ocupa siempre 100vh y se desplaza horizontalmente */
+#stage {
+  position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
-  z-index: 10;
+  display: flex;
+  will-change: transform;
+}
+
+/* Cada panel ocupa exactamente 100vw × 100vh */
+.panel {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── HERO ─── */
+#hero {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  overflow: hidden;
+  background: #f9f9f9;
 }
-
 #hero-inner {
   display: flex;
   align-items: center;
@@ -57,193 +67,273 @@ body { scroll-behavior: smooth; }
   height: 100%;
   will-change: filter;
 }
-
-#work {
-  position: relative;
-  z-index: 20;
-  background: #ffffff;
-  transform: translateY(30vh);
-  padding: 120px 40px;
-  will-change: transform, filter;
+.text-display-xl {
+  font-size: 8rem;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+@media (max-width: 768px) {
+  .text-display-xl { font-size: 4rem; }
 }
 
+/* ─── WORK ─── */
+#work {
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px;
+  overflow-y: auto;
+}
 #work::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 0.5px;
-  background: rgba(0,0,0,0.5);
+  width: 0.5px;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
 }
 
-/* About entra igual que work: empieza desplazada hacia abajo y sube encima */
+/* ─── ABOUT ─── */
 #about {
-  position: relative;
-  z-index: 30;
   background: #f9f9f9;
-  transform: translateY(30vh);
-  padding: 160px 40px;
-  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px;
+  overflow-y: auto;
 }
-
 #about::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 0.5px;
-  background: rgba(0,0,0,0.5);
+  width: 0.5px;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
 }
 
+/* ─── CONTACT ─── */
 #contact {
-  position: relative;
-  z-index: 40;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#contact::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.5px;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+}
+
+/* ─── CURSOR IMAGES ─── */
+.cursor-image {
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  object-fit: cover;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  background: rgba(249,249,249,0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+}
+
+/* ─── FOOTER ─── */
+#footer-panel {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 32px 60px;
   background: #f9f9f9;
 }
 </style>
 </head>
+<body>
 
-<body class="bg-[#f9f9f9] text-black">
-
-<nav class="fixed top-0 w-full z-50 bg-[#f9f9f9]/80 backdrop-blur-xl flex justify-between px-8 py-6">
-  <div class="font-bold">Carlota Díaz</div>
-  <div class="flex gap-6">
-    <a href="#work">Work</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
+<!-- NAV -->
+<nav>
+  <div style="font-weight: 700;">Carlota Díaz</div>
+  <div style="display: flex; gap: 24px;">
+    <a href="#work" style="text-decoration: none; color: inherit;">Work</a>
+    <a href="#about" style="text-decoration: none; color: inherit;">About</a>
+    <a href="#contact" style="text-decoration: none; color: inherit;">Contact</a>
   </div>
 </nav>
 
-<main>
+<!-- SCROLL TRACK (da altura a la página) -->
+<div id="scroll-track"></div>
 
-  <section id="hero">
+<!-- STAGE (contenedor horizontal fijo) -->
+<div id="stage">
+
+  <!-- 0: HERO -->
+  <div id="hero" class="panel">
     <div id="hero-inner">
-      <h1 class="text-display-xl font-extrabold uppercase">Carlota Díaz</h1>
-      <p class="mt-4 uppercase tracking-widest">Art Director — AI</p>
+      <h1 class="text-display-xl">Carlota Díaz</h1>
+      <p style="margin-top: 16px; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.85rem;">Art Director — AI</p>
     </div>
-  </section>
+  </div>
 
-  <section id="work">
-    <h2 class="text-4xl font-bold mb-10">Selected Works</h2>
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      <div style="aspect-ratio: 1; background: #e0e0e0;"></div>
-      <div style="aspect-ratio: 1; background: #e0e0e0;"></div>
-      <div style="aspect-ratio: 1; background: #e0e0e0;"></div>
-      <div style="aspect-ratio: 1; background: #e0e0e0;"></div>
-      <div style="aspect-ratio: 1; background: #e0e0e0;"></div>
-      <div style="aspect-ratio: 1; background: #e0e0e0;"></div>
+  <!-- 1: WORK -->
+  <div id="work" class="panel">
+    <h2 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 40px;">Selected Works</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 900px;">
+      <div style="aspect-ratio: 1; background: #e0e0e0; border-radius: 4px;"></div>
+      <div style="aspect-ratio: 1; background: #e0e0e0; border-radius: 4px;"></div>
+      <div style="aspect-ratio: 1; background: #e0e0e0; border-radius: 4px;"></div>
+      <div style="aspect-ratio: 1; background: #e0e0e0; border-radius: 4px;"></div>
+      <div style="aspect-ratio: 1; background: #e0e0e0; border-radius: 4px;"></div>
+      <div style="aspect-ratio: 1; background: #e0e0e0; border-radius: 4px;"></div>
     </div>
-  </section>
+  </div>
 
-  <section id="about">
-    <h2 class="text-4xl font-bold mb-10">About</h2>
-    <p>Contenido about...</p>
-  </section>
+  <!-- 2: ABOUT -->
+  <div id="about" class="panel">
+    <h2 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 40px;">About</h2>
+    <p style="max-width: 520px; line-height: 1.7; color: #333;">Contenido about...</p>
+  </div>
 
-  <section id="contact" class="py-40 px-8 text-center">
-    <a href="mailto:hello@carlotadiaz.ai">hello@carlotadiaz.ai</a>
-  </section>
+  <!-- 3: CONTACT -->
+  <div id="contact" class="panel">
+    <a href="mailto:hello@carlotadiaz.ai"
+       style="font-size: 2rem; font-weight: 700; text-decoration: none; color: inherit; border-bottom: 2px solid black; padding-bottom: 4px;">
+      hello@carlotadiaz.ai
+    </a>
+    <p style="margin-top: 24px; opacity: 0.4; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em;">© Carlota Díaz</p>
+  </div>
 
-</main>
-
-<footer class="py-20 px-8">© Carlota Díaz</footer>
+</div>
 
 <script>
-const hero = document.querySelector("#hero");
-const heroInner = document.querySelector("#hero-inner");
-const work = document.querySelector("#work");
-const about = document.querySelector("#about");
+  // ─── CONFIG ───────────────────────────────────────────────────────────────
+  const SECTIONS = ['hero', 'work', 'about', 'contact'];
+  const NUM_PANELS = SECTIONS.length; // 4
 
-const imageSrcs = [
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuD5apwWXgN2Kp2lfA7Nje1FNB3_7yYiqn07SHdnGlWlEKF_L5YWWwpp2vtu6VS_2q-Mj4UDMYW1-f580VKY67tf_GQrAewvf8jD0Onsq5Z9ow86S7otBE97mClBVbBzkj_QOZqK5ENhpcUJBcQibd7M0iK5MnSZG5bekubIhhvKcOBrnuERN7-yishRTKxEOKowFU1jFRcWsd4xb7whxkB35N9u2iRsv1Bpa1Q8Jcf0TtLfHqosfx8tK_lbu-LFIn8M3LNdqv__s2g"
-];
+  const stage     = document.getElementById('stage');
+  const heroInner = document.getElementById('hero-inner');
+  const heroPanel = document.getElementById('hero');
+  const scrollTrack = document.getElementById('scroll-track');
 
-const imagePool = imageSrcs.map(src => {
-  const img = new Image();
-  img.src = src;
-  img.className = "cursor-image";
-  img.width = 150;
-  img.height = 200;
-  return img;
-});
+  // ─── SCROLL TRACK HEIGHT ──────────────────────────────────────────────────
+  // Necesitamos (NUM_PANELS - 1) × vw píxeles de scroll
+  // + 1 vh extra para que el último panel sea cómodo
+  function setTrackHeight() {
+    scrollTrack.style.height =
+      (NUM_PANELS - 1) * window.innerWidth + window.innerHeight + 'px';
+  }
+  setTrackHeight();
+  window.addEventListener('resize', setTrackHeight);
 
-let currentIndex = 0;
-let lastMove = 0;
+  // ─── SMOOTH SCROLL LOOP ───────────────────────────────────────────────────
+  let targetScroll  = 0;
+  let currentScroll = 0;
+  let animating     = false;
 
-let heroVisible = true;
-const heroObserver = new IntersectionObserver(
-  ([entry]) => { heroVisible = entry.isIntersecting; },
-  { threshold: 0.05 }
-);
-heroObserver.observe(hero);
-
-hero.addEventListener("mousemove", (e) => {
-  const now = Date.now();
-  if (now - lastMove < 140) return;
-  if (!heroVisible) return;
-  lastMove = now;
-
-  const rect = hero.getBoundingClientRect();
-  const img = imagePool[currentIndex].cloneNode();
-  hero.appendChild(img);
-
-  img.style.left = (e.clientX - rect.left) + "px";
-  img.style.top = (e.clientY - rect.top) + "px";
-
-  requestAnimationFrame(() => {
-    img.style.opacity = "1";
-    img.style.transform = "scale(1)";
+  window.addEventListener('scroll', () => {
+    targetScroll = window.scrollY;
+    if (!animating) { animating = true; requestAnimationFrame(animate); }
   });
 
-  setTimeout(() => {
-    img.style.opacity = "0";
-    img.style.transform = "scale(0.95)";
-    setTimeout(() => img.remove(), 300);
-  }, 750);
+  function animate() {
+    currentScroll += (targetScroll - currentScroll) * 0.08;
 
-  currentIndex = (currentIndex + 1) % imagePool.length;
-});
+    const maxTranslate = (NUM_PANELS - 1) * window.innerWidth;
+    const tx = Math.min(Math.max(currentScroll, 0), maxTranslate);
 
-let targetScroll = 0;
-let currentScroll = 0;
-let animating = false;
+    // Mover el stage horizontalmente
+    stage.style.transform = `translateX(-${tx}px)`;
 
-window.addEventListener("scroll", () => {
-  targetScroll = window.scrollY;
-  if (!animating) {
-    animating = true;
-    requestAnimationFrame(animate);
+    // Blur del hero al pasar a work
+    const heroBlur = Math.min(tx / (window.innerWidth * 0.5), 1);
+    heroInner.style.filter = `blur(${heroBlur * 18}px)`;
+
+    if (Math.abs(targetScroll - currentScroll) > 0.5) {
+      requestAnimationFrame(animate);
+    } else {
+      animating = false;
+    }
   }
-});
 
-function animate() {
-  currentScroll += (targetScroll - currentScroll) * 0.08;
+  // ─── NAV LINKS → scroll a sección ────────────────────────────────────────
+  document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const id    = link.getAttribute('href').slice(1);
+      const index = SECTIONS.indexOf(id);
+      if (index >= 0) {
+        window.scrollTo({ top: index * window.innerWidth, behavior: 'smooth' });
+      }
+    });
+  });
 
-  const vh = window.innerHeight;
+  // ─── CURSOR IMAGES EN HERO ────────────────────────────────────────────────
+  const imageSrcs = [
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuD5apwWXgN2Kp2lfA7Nje1FNB3_7yYiqn07SHdnGlWlEKF_L5YWWwpp2vtu6VS_2q-Mj4UDMYW1-f580VKY67tf_GQrAewvf8jD0Onsq5Z9ow86S7otBE97mClBVbBzkj_QOZqK5ENhpcUJBcQibd7M0iK5MnSZG5bekubIhhvKcOBrnuERN7-yishRTKxEOKowFU1jFRcWsd4xb7whxkB35N9u2iRsv1Bpa1Q8Jcf0TtLfHqosfx8tK_lbu-LFIn8M3LNdqv__s2g"
+  ];
 
-  // — Tramo 1: hero → work (igual que antes) —
-  const progress1 = Math.min(currentScroll / (vh * 0.4), 1);
-  heroInner.style.filter = `blur(${progress1 * 20}px)`;
-  work.style.transform = `translateY(${30 - progress1 * 30}vh)`;
+  const imagePool = imageSrcs.map(src => {
+    const img = new Image();
+    img.src = src;
+    img.className = "cursor-image";
+    return img;
+  });
 
-  // — Tramo 2: work → about —
-  // Empieza cuando about llega al borde inferior de la pantalla
-  const aboutStart = about.getBoundingClientRect().top + currentScroll - vh;
-  const progress2 = Math.min(Math.max((currentScroll - aboutStart) / (vh * 0.4), 0), 1);
-  work.style.filter = `blur(${progress2 * 20}px)`;
-  about.style.transform = `translateY(${30 - progress2 * 30}vh)`;
+  let currentIndex = 0;
+  let lastMove     = 0;
 
-  if (Math.abs(targetScroll - currentScroll) > 0.5) {
-    requestAnimationFrame(animate);
-  } else {
-    animating = false;
-  }
-}
+  heroPanel.addEventListener('mousemove', e => {
+    const now = Date.now();
+    if (now - lastMove < 140) return;
+    // Solo si estamos en hero (poco scroll)
+    if (window.scrollY > window.innerWidth * 0.3) return;
+    lastMove = now;
+
+    const rect = heroPanel.getBoundingClientRect();
+    const img  = imagePool[currentIndex].cloneNode();
+    heroPanel.appendChild(img);
+    img.style.left = (e.clientX - rect.left) + 'px';
+    img.style.top  = (e.clientY - rect.top)  + 'px';
+
+    requestAnimationFrame(() => {
+      img.style.opacity   = '1';
+      img.style.transform = 'scale(1)';
+    });
+    setTimeout(() => {
+      img.style.opacity   = '0';
+      img.style.transform = 'scale(0.95)';
+      setTimeout(() => img.remove(), 300);
+    }, 750);
+
+    currentIndex = (currentIndex + 1) % imagePool.length;
+  });
 </script>
-
 </body>
 </html>

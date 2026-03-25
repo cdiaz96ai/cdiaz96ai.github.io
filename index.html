@@ -231,9 +231,9 @@ function animate() {
   work.style.transform = `translateY(${30 - progress1 * 30}vh)`;
 
   // — Tramo 2: work → about —
-  // Empieza cuando work ya está asentado, usa la posición top de work como referencia
-  const workTop = work.getBoundingClientRect().top + currentScroll;
-  const progress2 = Math.min(Math.max((currentScroll - workTop * 0.5) / (vh * 0.6), 0), 1);
+  // Empieza cuando about llega al borde inferior de la pantalla
+  const aboutStart = about.getBoundingClientRect().top + currentScroll - vh;
+  const progress2 = Math.min(Math.max((currentScroll - aboutStart) / (vh * 0.4), 0), 1);
   work.style.filter = `blur(${progress2 * 20}px)`;
   about.style.transform = `translateY(${30 - progress2 * 30}vh)`;
 

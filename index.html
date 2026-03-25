@@ -851,11 +851,130 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   window.addEventListener('resize', build);
   window._particleWP = 0;
 
+  // ── SNAKE ────────────────────────────────────────────────────────────────
+  const CELL = 14;
+  let snakeMode = false;
+  let sn = {};
+
+  function snakeFood() {
+    let f;
+    do { f = { x: Math.random() * sn.cols | 0, y: Math.random() * sn.rows | 0 }; }
+    while (sn.body.some(c => c.x === f.x && c.y === f.y));
+    return f;
+  }
+
+  function snakeStart() {
+    const W = window.innerWidth, H = window.innerHeight;
+    sn.cols = Math.floor(W / CELL);
+    sn.rows = Math.floor(H / CELL);
+    const sx = sn.cols >> 1, sy = sn.rows >> 1;
+    sn.body     = [{ x: sx, y: sy }, { x: sx - 1, y: sy }, { x: sx - 2, y: sy }];
+    sn.dir      = { dx: 1, dy: 0 };
+    sn.nextDir  = { dx: 1, dy: 0 };
+    sn.food     = snakeFood();
+    sn.score    = 0;
+    sn.over     = false;
+    sn.speed    = 130;
+    sn.lastStep = performance.now();
+    snakeMode   = true;
+    canvas.style.pointerEvents = 'none';
+  }
+
+  function snakeStep() {
+    if (sn.over) return;
+    sn.dir = sn.nextDir;
+    const head = sn.body[0];
+    const nx = (head.x + sn.dir.dx + sn.cols) % sn.cols;
+    const ny = (head.y + sn.dir.dy + sn.rows) % sn.rows;
+    if (sn.body.slice(1).some(c => c.x === nx && c.y === ny)) { sn.over = true; return; }
+    sn.body.unshift({ x: nx, y: ny });
+    if (nx === sn.food.x && ny === sn.food.y) {
+      sn.score++;
+      sn.food = snakeFood();
+      if (sn.speed > 55) sn.speed -= 4;
+    } else {
+      sn.body.pop();
+    }
+  }
+
+  function snakeDraw(W, H, now) {
+    ctx.clearRect(0, 0, W, H);
+    if (sn.over) {
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#f0f0f0'; ctx.globalAlpha = 1;
+      ctx.font = 'bold 28px Syne, sans-serif';
+      ctx.fillText('GAME OVER', W / 2, H / 2 - 30);
+      ctx.font = '13px Space Grotesk, sans-serif';
+      ctx.fillStyle = 'rgba(240,240,240,0.5)';
+      ctx.fillText(`score  ${sn.score}`, W / 2, H / 2 + 8);
+      ctx.fillStyle = 'rgba(240,240,240,0.25)';
+      ctx.fillText('[ enter ]  reintentar    [ esc ]  salir', W / 2, H / 2 + 32);
+      return;
+    }
+    if (now - sn.lastStep >= sn.speed) { snakeStep(); sn.lastStep = now; }
+
+    ctx.font = `${CELL - 2}px monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+    // Comida
+    ctx.fillStyle = '#E8571A'; ctx.globalAlpha = 1;
+    ctx.fillText('*', sn.food.x * CELL + CELL / 2, sn.food.y * CELL + CELL / 2);
+
+    // Serpiente
+    const headChars = { '1,0': '>', '-1,0': '<', '0,-1': '^', '0,1': 'v' };
+    sn.body.forEach((c, i) => {
+      ctx.globalAlpha = Math.max(0.25, 1 - i * (0.6 / sn.body.length));
+      ctx.fillStyle = i === 0 ? '#f0f0f0' : 'rgba(240,240,240,0.75)';
+      const ch = i === 0 ? (headChars[`${sn.dir.dx},${sn.dir.dy}`] || '>') : (i % 2 === 0 ? 'o' : '#');
+      ctx.fillText(ch, c.x * CELL + CELL / 2, c.y * CELL + CELL / 2);
+    });
+    ctx.globalAlpha = 1;
+
+    // Score + hint
+    ctx.font = '11px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillStyle = 'rgba(240,240,240,0.25)';
+    ctx.fillText(`score  ${sn.score}`, 20, 20);
+    ctx.fillText('[ esc ] salir', 20, 36);
+  }
+
+  // Click en hero → activar snake (solo desktop)
+  heroPanel.addEventListener('click', () => {
+    if (window.innerWidth < 768 || (window._particleWP || 0) > 0.15) return;
+    if (!snakeMode) { snakeStart(); return; }
+    if (sn.over) snakeStart();
+  });
+
+  // Teclado
+  const DIR = {
+    ArrowUp: { dx: 0, dy: -1 }, ArrowDown: { dx: 0, dy: 1 },
+    ArrowLeft: { dx: -1, dy: 0 }, ArrowRight: { dx: 1, dy: 0 },
+    w: { dx: 0, dy: -1 }, s: { dx: 0, dy: 1 }, a: { dx: -1, dy: 0 }, d: { dx: 1, dy: 0 },
+    W: { dx: 0, dy: -1 }, S: { dx: 0, dy: 1 }, A: { dx: -1, dy: 0 }, D: { dx: 1, dy: 0 }
+  };
+  document.addEventListener('keydown', e => {
+    if (!snakeMode) return;
+    if (e.key === 'Escape') { snakeMode = false; return; }
+    if (e.key === 'Enter' && sn.over) { snakeStart(); return; }
+    const d = DIR[e.key];
+    if (d && (d.dx + sn.dir.dx !== 0 || d.dy + sn.dir.dy !== 0)) {
+      sn.nextDir = d; e.preventDefault();
+    }
+  });
+  // ── FIN SNAKE ─────────────────────────────────────────────────────────────
+
   (function loop() {
     requestAnimationFrame(loop);
     if (!ready) return;
-    const wP = window._particleWP || 0;
     const W = window.innerWidth, H = window.innerHeight;
+
+    // Snake toma el control del canvas
+    if (snakeMode) {
+      heroSub.style.opacity = '0';
+      snakeDraw(W, H, performance.now());
+      return;
+    }
+
+    const wP = window._particleWP || 0;
     const t = wP * wP * (3 - 2 * wP);
 
     heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
@@ -888,7 +1007,6 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       p.vx *= 0.93; p.vy *= 0.93;
       p.cx += p.vx; p.cy += p.vy;
 
-      // Cambiar carácter aleatoriamente
       if (--p.timer <= 0) {
         p.char  = CHARS[Math.random() * CHARS.length | 0];
         p.timer = (8 + Math.random() * 20) | 0;

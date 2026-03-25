@@ -54,17 +54,17 @@ html, body {
 /* ─── WORK ─── */
 #work {
   z-index: 2; background: var(--bg); display: flex; flex-direction: column;
-  padding: 80px 64px; transform: scale(0.88); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
+  padding: 80px 64px; transform: scale(0.15); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
 }
 /* ─── ABOUT ─── */
 #about {
   z-index: 3; background: var(--bg); display: flex; flex-direction: column;
-  justify-content: center; padding: 80px 64px; transform: scale(0.88); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
+  justify-content: center; padding: 80px 64px; transform: scale(0.15); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
 }
 /* ─── CONTACT ─── */
 #contact {
   z-index: 4; background: var(--bg); display: flex; align-items: center;
-  justify-content: center; flex-direction: column; gap: 20px; transform: scale(0.88); opacity: 0; pointer-events: none; will-change: transform, opacity;
+  justify-content: center; flex-direction: column; gap: 20px; transform: scale(0.15); opacity: 0; pointer-events: none; will-change: transform, opacity;
 }
 
 /* ─── SECTION HEADING ─── */
@@ -539,20 +539,20 @@ function animate() {
   const s = currentScroll, W = window.innerWidth, T = TRANS * W;
 
   const wP = clamp(s / T, 0, 1);
-  workEl.style.transform    = `scale(${0.88 + wP * 0.12})`;
+  workEl.style.transform    = `scale(${0.15 + wP * 0.85})`;
   workEl.style.opacity      = wP;
   workEl.style.pointerEvents = wP > 0.5 ? 'auto' : 'none';
   heroInner.style.filter    = `blur(${wP * 16}px)`;
   window._particleWP        = wP;
 
   const aP = clamp((s - W) / T, 0, 1);
-  aboutEl.style.transform    = `scale(${0.88 + aP * 0.12})`;
+  aboutEl.style.transform    = `scale(${0.15 + aP * 0.85})`;
   aboutEl.style.opacity      = aP;
   aboutEl.style.pointerEvents = aP > 0.5 ? 'auto' : 'none';
   workEl.style.filter        = `blur(${aP * 16}px)`;
 
   const cP = clamp((s - 2 * W) / T, 0, 1);
-  contactEl.style.transform    = `scale(${0.88 + cP * 0.12})`;
+  contactEl.style.transform    = `scale(${0.15 + cP * 0.85})`;
   contactEl.style.opacity      = cP;
   contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
   aboutEl.style.filter         = `blur(${cP * 16}px)`;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="light" lang="es">
+<html class="dark" lang="es">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,41 +8,41 @@
 <meta property="og:description" content="Art Director especializada en IA. Portfolio de proyectos seleccionados."/>
 <meta property="og:type" content="website"/>
 <title>Carlota Díaz — AI Art Direction</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0a0a0a;
+  --bg-alt:   #111111;
+  --text:     #f0f0f0;
+  --muted:    rgba(240,240,240,0.4);
+  --line:     rgba(240,240,240,0.12);
+  --grid-bg:  #1c1c1c;
+  --accent:   #E8571A;
+}
+
 html, body {
-  margin: 0;
-  padding: 0;
   overflow-x: hidden;
-}
-body {
-  font-family: 'Inter', sans-serif;
-  background: #f9f9f9;
-  color: black;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
 }
 
-/* Rail invisible que da altura para el scroll */
-#scroll-track {
-  position: relative;
-  z-index: 0;
-}
+/* ─── SCROLL TRACK ─── */
+#scroll-track { position: relative; z-index: 0; }
 
-/* Stage fijo — siempre 100vw × 100vh */
+/* ─── STAGE ─── */
 #stage {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
 }
 
-/* Todos los paneles se apilan en el mismo sitio */
 .panel {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -51,7 +51,7 @@ body {
 /* ─── HERO ─── */
 #hero {
   z-index: 1;
-  background: #f9f9f9;
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,16 +62,26 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   will-change: filter;
 }
 .text-display-xl {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
   font-size: 8rem;
   letter-spacing: -0.04em;
-  line-height: 0.9;
-  font-weight: 900;
+  line-height: 0.88;
   text-transform: uppercase;
+  color: var(--text);
+}
+.hero-sub {
+  margin-top: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 300;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--accent);
 }
 @media (max-width: 768px) {
   .text-display-xl { font-size: 4rem; }
@@ -80,11 +90,10 @@ body {
 /* ─── WORK ─── */
 #work {
   z-index: 2;
-  background: #ffffff;
+  background: var(--bg-alt);
   display: flex;
   flex-direction: column;
-  padding: 80px 60px;
-  /* empieza fuera a la derecha */
+  padding: 80px 64px;
   transform: translateX(100vw);
   will-change: transform, filter;
 }
@@ -93,17 +102,17 @@ body {
   position: absolute;
   top: 0; left: 0;
   width: 0.5px; height: 100%;
-  background: rgba(0,0,0,0.3);
+  background: var(--line);
 }
 
 /* ─── ABOUT ─── */
 #about {
   z-index: 3;
-  background: #f9f9f9;
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 80px 60px;
+  padding: 80px 64px;
   transform: translateX(100vw);
   will-change: transform, filter;
 }
@@ -112,13 +121,13 @@ body {
   position: absolute;
   top: 0; left: 0;
   width: 0.5px; height: 100%;
-  background: rgba(0,0,0,0.3);
+  background: var(--line);
 }
 
 /* ─── CONTACT ─── */
 #contact {
   z-index: 4;
-  background: #f9f9f9;
+  background: var(--bg-alt);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,23 +140,73 @@ body {
   position: absolute;
   top: 0; left: 0;
   width: 0.5px; height: 100%;
-  background: rgba(0,0,0,0.3);
+  background: var(--line);
 }
 
-/* ─── WORK GRID — cabe en 100vh sin scroll ─── */
+/* ─── SECTION HEADINGS ─── */
+.section-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  margin-bottom: 40px;
+  flex-shrink: 0;
+}
+
+/* ─── WORK GRID ─── */
 #work-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 10px;
+  gap: 8px;
   flex: 1;
-  min-height: 0; /* clave para que no desborde */
-  max-width: 780px;
+  min-height: 0;
+  width: 100%;
 }
 #work-grid > div {
-  background: #e0e0e0;
-  border-radius: 4px;
+  background: var(--grid-bg);
+  border-radius: 2px;
   min-height: 0;
+  transition: background 0.3s ease;
+}
+#work-grid > div:hover {
+  background: #2a2a2a;
+  outline: 1px solid rgba(232, 87, 26, 0.35);
+}
+
+/* ─── ABOUT TEXT ─── */
+.about-text {
+  max-width: 480px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  font-weight: 300;
+  color: rgba(240,240,240,0.75);
+}
+
+/* ─── CONTACT LINK ─── */
+.contact-link {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+  text-decoration: none;
+  color: var(--text);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  letter-spacing: -0.02em;
+}
+.contact-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.contact-footer {
+  margin-top: 28px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
 }
 
 /* ─── CURSOR IMAGES ─── */
@@ -159,35 +218,56 @@ body {
   z-index: 5;
   opacity: 0;
   transform: scale(0.95);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
   object-fit: cover;
+  border-radius: 2px;
 }
 
 /* ─── NAV ─── */
 nav {
   position: fixed;
-  top: 0;
-  width: 100%;
+  top: 0; width: 100%;
   z-index: 100;
-  background: rgba(249,249,249,0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10,10,10,0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
+  padding: 22px 32px;
+  border-bottom: 0.5px solid var(--line);
 }
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+}
+.nav-links a {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 0.3s ease;
+}
+.nav-links a:hover { color: var(--accent); }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div style="font-weight: 700;">Carlota Díaz</div>
-  <div style="display: flex; gap: 24px;">
-    <a href="#work"    style="text-decoration: none; color: inherit;">Work</a>
-    <a href="#about"   style="text-decoration: none; color: inherit;">About</a>
-    <a href="#contact" style="text-decoration: none; color: inherit;">Contact</a>
+  <div class="nav-logo">Carlota Díaz</div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
   </div>
 </nav>
 
@@ -201,52 +281,43 @@ nav {
   <div id="hero" class="panel">
     <div id="hero-inner">
       <h1 class="text-display-xl">Carlota Díaz</h1>
-      <p style="margin-top: 16px; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.85rem;">Art Director — AI</p>
+      <p class="hero-sub">Art Director — AI</p>
     </div>
   </div>
 
   <!-- 1: WORK -->
   <div id="work" class="panel">
-    <h2 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 28px; flex-shrink: 0;">Selected Works</h2>
+    <p class="section-heading">Selected Works</p>
     <div id="work-grid">
-      <div></div><div></div><div></div>
-      <div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
     </div>
   </div>
 
   <!-- 2: ABOUT -->
   <div id="about" class="panel">
-    <h2 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 40px;">About</h2>
-    <p style="max-width: 520px; line-height: 1.7; color: #333;">Contenido about...</p>
+    <p class="section-heading">About</p>
+    <p class="about-text">Contenido about...</p>
   </div>
 
   <!-- 3: CONTACT -->
   <div id="contact" class="panel">
-    <a href="mailto:hello@carlotadiaz.ai"
-       style="font-size: 2rem; font-weight: 700; text-decoration: none; color: inherit; border-bottom: 2px solid black; padding-bottom: 4px;">
-      hello@carlotadiaz.ai
-    </a>
-    <p style="margin-top: 24px; opacity: 0.4; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.15em;">© Carlota Díaz</p>
+    <a class="contact-link" href="mailto:hello@carlotadiaz.ai">hello@carlotadiaz.ai</a>
+    <p class="contact-footer">© Carlota Díaz</p>
   </div>
 
 </div>
 
 <script>
-  // ─── ELEMENTOS ────────────────────────────────────────────────────────────
-  const heroInner = document.getElementById('hero-inner');
-  const heroPanel = document.getElementById('hero');
-  const workEl    = document.getElementById('work');
-  const aboutEl   = document.getElementById('about');
-  const contactEl = document.getElementById('contact');
+  const heroInner  = document.getElementById('hero-inner');
+  const heroPanel  = document.getElementById('hero');
+  const workEl     = document.getElementById('work');
+  const aboutEl    = document.getElementById('about');
+  const contactEl  = document.getElementById('contact');
   const scrollTrack = document.getElementById('scroll-track');
 
-  // Cada sección tiene 1vw de "dwell" + la transición dura 0.5vw
-  // Estructura del scroll:
-  //  [0 → 0.5vw]   work entra, hero se borrosa
-  //  [1vw → 1.5vw] about entra, work se borrosa
-  //  [2vw → 2.5vw] contact entra, about se borrosa
-  //  Total: 3vw + vh de rail
-  const TRANS = 0.5; // fracción de vw que dura cada transición
+  // Duración de cada transición: 0.65 × vw (más lenta y fluida)
+  const TRANS = 0.65;
 
   function setTrackHeight() {
     scrollTrack.style.height = (3 * window.innerWidth + window.innerHeight) + 'px';
@@ -264,35 +335,36 @@ nav {
   });
 
   function animate() {
-    currentScroll += (targetScroll - currentScroll) * 0.08;
+    // Lerp más lento → sensación más lujosa (0.05 en lugar de 0.08)
+    currentScroll += (targetScroll - currentScroll) * 0.05;
 
     const s = currentScroll;
     const W = window.innerWidth;
     const T = TRANS * W;
 
-    // — work desliza sobre hero —
+    // work desliza sobre hero
     const wP = clamp(s / T, 0, 1);
-    workEl.style.transform   = `translateX(${(1 - wP) * 100}vw)`;
-    heroInner.style.filter   = `blur(${wP * 18}px)`;
+    workEl.style.transform  = `translateX(${(1 - wP) * 100}vw)`;
+    heroInner.style.filter  = `blur(${wP * 16}px)`;
 
-    // — about desliza sobre work —
+    // about desliza sobre work
     const aP = clamp((s - W) / T, 0, 1);
-    aboutEl.style.transform  = `translateX(${(1 - aP) * 100}vw)`;
-    workEl.style.filter      = `blur(${aP * 18}px)`;
+    aboutEl.style.transform = `translateX(${(1 - aP) * 100}vw)`;
+    workEl.style.filter     = `blur(${aP * 16}px)`;
 
-    // — contact desliza sobre about —
+    // contact desliza sobre about
     const cP = clamp((s - 2 * W) / T, 0, 1);
     contactEl.style.transform = `translateX(${(1 - cP) * 100}vw)`;
-    aboutEl.style.filter      = `blur(${cP * 18}px)`;
+    aboutEl.style.filter      = `blur(${cP * 16}px)`;
 
-    if (Math.abs(targetScroll - currentScroll) > 0.5) {
+    if (Math.abs(targetScroll - currentScroll) > 0.3) {
       requestAnimationFrame(animate);
     } else {
       animating = false;
     }
   }
 
-  // ─── NAV LINKS ────────────────────────────────────────────────────────────
+  // NAV LINKS
   const sectionMap = { work: 1, about: 2, contact: 3 };
   document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
@@ -305,7 +377,7 @@ nav {
     });
   });
 
-  // ─── CURSOR IMAGES EN HERO ────────────────────────────────────────────────
+  // CURSOR IMAGES EN HERO
   const imageSrcs = [
     "https://lh3.googleusercontent.com/aida-public/AB6AXuBc8RdO0a-FZLxegTA-LfjaB2GqTrE3OBlrOFTxlWbbgibvjnqq9LBj-JuXrXJMZ9ojH-mJqtBoU0f-Dc33EAjU7EbvVZGcrGVIDBgxRbaBvXa7lrpq34GblmFb9TOmNKz46EKX1-8-Ral2ohYvvSoDQ6Oecb24ttydT8CvuytN33kXdd7ZjXEIcssBLfr5iCnn9SXcWV6tkteDMnnJmwGOARzCwmcLGxbvMRnxDs_oiaJZNh68DV6jLwxw_os9aXk6w6lVdBGs9EE",
     "https://lh3.googleusercontent.com/aida-public/AB6AXuBYWl1c3ILTLcUlVRT22MnZ9vo71Uc_WTgsDZdtwA-WmkjmUr3e32tEGhJZuCfdTFVClCW2r40L2M3sR0ctBFgDiCA7KrQyxN6_weCCoTevat-kI3xOh8_epnwGgyVqeQosd5e5Xx3KshiA0y_6ZbzssN1LlBSyi1PMPSDI_noX6b25ws1jRcJxzcZbo652uT1yr-z42chVSwsEwm9aXufOLa6qZk9zX9Iw0S3pEzNX5Gex4ne0IpGYZ2mNNtNErYJnWC1OntrqtEQ",
@@ -320,31 +392,3 @@ nav {
   });
 
   let currentIndex = 0, lastMove = 0;
-
-  heroPanel.addEventListener('mousemove', e => {
-    const now = Date.now();
-    if (now - lastMove < 140) return;
-    if (window.scrollY > window.innerWidth * 0.2) return;
-    lastMove = now;
-
-    const rect = heroPanel.getBoundingClientRect();
-    const img  = imagePool[currentIndex].cloneNode();
-    heroPanel.appendChild(img);
-    img.style.left = (e.clientX - rect.left) + 'px';
-    img.style.top  = (e.clientY - rect.top)  + 'px';
-
-    requestAnimationFrame(() => {
-      img.style.opacity   = '1';
-      img.style.transform = 'scale(1)';
-    });
-    setTimeout(() => {
-      img.style.opacity   = '0';
-      img.style.transform = 'scale(0.95)';
-      setTimeout(() => img.remove(), 300);
-    }, 750);
-
-    currentIndex = (currentIndex + 1) % imagePool.length;
-  });
-</script>
-</body>
-</html>

@@ -56,21 +56,16 @@ html, body {
   z-index: 2; background: var(--bg); display: flex; flex-direction: column;
   padding: 80px 64px; transform: scale(0.88); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
 }
-#work::before { content: ""; position: absolute; top: 0; left: 0; width: 0.5px; height: 100%; background: var(--line); }
-
 /* ─── ABOUT ─── */
 #about {
   z-index: 3; background: var(--bg); display: flex; flex-direction: column;
   justify-content: center; padding: 80px 64px; transform: scale(0.88); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
 }
-#about::before { content: ""; position: absolute; top: 0; left: 0; width: 0.5px; height: 100%; background: var(--line); }
-
 /* ─── CONTACT ─── */
 #contact {
   z-index: 4; background: var(--bg); display: flex; align-items: center;
   justify-content: center; flex-direction: column; gap: 20px; transform: scale(0.88); opacity: 0; pointer-events: none; will-change: transform, opacity;
 }
-#contact::before { content: ""; position: absolute; top: 0; left: 0; width: 0.5px; height: 100%; background: var(--line); }
 
 /* ─── SECTION HEADING ─── */
 .section-heading {
@@ -130,7 +125,7 @@ nav {
   position: fixed; top: 0; width: 100%; z-index: 100;
   background: rgba(10,10,10,0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   display: flex; justify-content: space-between; align-items: center;
-  padding: 22px 32px; border-bottom: 0.5px solid var(--line);
+  padding: 22px 32px;
 }
 .nav-logo { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.02em; color: var(--text); font-variant-numeric: tabular-nums; }
 .nav-links { display: flex; gap: 28px; }

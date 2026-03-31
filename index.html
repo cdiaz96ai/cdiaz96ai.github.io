@@ -32,10 +32,7 @@ html, body {
   font-family: 'Space Grotesk', sans-serif;
 }
 
-/* ─── SCROLL TRACK ─── */
 #scroll-track { position: relative; z-index: 0; }
-
-/* ─── STAGE ─── */
 #stage { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; }
 
 .panel {
@@ -43,7 +40,6 @@ html, body {
   width: 100vw; height: 100vh; overflow: hidden;
 }
 
-/* ─── HERO ─── */
 #hero { z-index: 1; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; }
 #hero-inner { display: flex; align-items: center; justify-content: center; flex-direction: column; width: 100%; height: 100%; will-change: filter; }
 .text-display-xl {
@@ -54,30 +50,26 @@ html, body {
   margin-top: 20px; font-weight: 300; font-size: 0.75rem;
   text-transform: uppercase; letter-spacing: 0.3em; color: var(--accent);
 }
-/* ─── WORK ─── */
+
 #work {
   z-index: 2; background: var(--bg); display: flex; flex-direction: column;
   padding: 80px 64px; transform: scale(0.15); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
 }
-/* ─── ABOUT ─── */
 #about {
   z-index: 3; background: var(--bg); display: flex; flex-direction: column;
   justify-content: center; padding: 80px 64px; transform: scale(0.15); opacity: 0; pointer-events: none; will-change: transform, filter, opacity;
 }
-/* ─── CONTACT ─── */
 #contact {
   z-index: 4; background: var(--bg); display: flex; align-items: center;
   justify-content: center; flex-direction: column; gap: 20px; transform: scale(0.15); opacity: 0; pointer-events: none; will-change: transform, opacity;
 }
 
-/* ─── SECTION HEADING ─── */
 .section-heading {
   font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.65rem;
   text-transform: uppercase; letter-spacing: 0.25em; color: var(--muted);
   margin-bottom: 40px; flex-shrink: 0;
 }
 
-/* ─── WORK GRID ─── */
 #work-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);
   gap: 8px; flex: 1; min-height: 0; width: 100%;
@@ -89,20 +81,24 @@ html, body {
 }
 .project-tile:hover { background: #242424; outline: 1px solid rgba(232,87,26,0.4); }
 .project-tile:hover .tile-info { opacity: 1; transform: translateY(0); }
+
+.tile-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: none; pointer-events: none;
+}
+
 .tile-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.8; }
 .tile-info {
   position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 14px;
   background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
   opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 2;
 }
 .tile-brand { display: block; font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 3px; }
 .tile-title { display: block; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; color: var(--text); line-height: 1.2; }
 
-/* ─── ABOUT TEXT ─── */
 .about-text { max-width: 480px; font-size: 1.05rem; line-height: 1.8; font-weight: 300; color: rgba(240,240,240,0.75); }
 
-/* ─── CONTACT LINK ─── */
-/* ─── CONTACT HEADING ─── */
 .contact-heading {
   font-size: 1.05rem; font-weight: 300; line-height: 1.8; color: var(--text);
   margin-bottom: 32px; transform: translateX(20px);
@@ -122,8 +118,6 @@ html, body {
 .contact-link:hover { color: var(--accent); border-color: var(--accent); }
 .contact-footer { margin-top: 28px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
 
-
-/* ─── NAV ─── */
 nav {
   position: fixed; top: 0; width: 100%; z-index: 100;
   background: rgba(10,10,10,0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
@@ -135,9 +129,6 @@ nav {
 .nav-links a { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none; color: var(--muted); transition: color 0.3s ease; }
 .nav-links a:hover { color: var(--accent); }
 
-/* ═══════════════════════════════════════════
-   PROJECT DETAIL — panel único dinámico
-   ═══════════════════════════════════════════ */
 #project-detail {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: var(--bg); z-index: 200;
@@ -147,7 +138,6 @@ nav {
 }
 #project-detail.active { transform: translateX(0); }
 
-/* Barra superior: back + contador */
 #detail-topbar {
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: space-between;
@@ -170,20 +160,17 @@ nav {
 #detail-counter { font-size: 0.7rem; letter-spacing: 0.15em; color: var(--muted); }
 #detail-counter span { color: var(--text); }
 
-/* ─── CANVAS: área donde se solapan las tarjetas ─── */
 #detail-canvas {
   position: relative;
   flex: 1;
   overflow: hidden;
 }
 
-/* Contenido scrollable */
 #detail-scroll {
   position: absolute; inset: 0;
   overflow-y: auto;
 }
 
-/* El inner no necesita animación propia — la hace el canvas */
 .detail-inner {
   padding: 64px 104px;
   display: flex; flex-direction: column; gap: 40px;
@@ -212,16 +199,11 @@ nav {
   color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em;
 }
 
-/* ─── FLECHAS LATERALES ─── */
 .detail-side-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  width: 52px; height: 52px;
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 20; width: 52px; height: 52px;
   display: flex; align-items: center; justify-content: center;
-  background: none; border: none;
-  cursor: pointer; color: var(--muted);
+  background: none; border: none; cursor: pointer; color: var(--muted);
   transition: color 0.25s ease;
 }
 .detail-side-arrow:hover { color: var(--accent); }
@@ -229,33 +211,26 @@ nav {
 #detail-side-prev { left: 20px; }
 #detail-side-next { right: 20px; }
 
-/* ─── MOBILE ─── */
+/* Rexona: múltiples vídeos YouTube */
+.detail-videos-grid {
+  display: flex; flex-direction: column; gap: 24px;
+}
+
 @media (max-width: 768px) {
-  /* NAV */
   nav { padding: 14px 20px; }
   .nav-logo { font-size: 0.72rem; }
   .nav-links { gap: 14px; }
   .nav-links a { font-size: 0.62rem; letter-spacing: 0.1em; }
-
-  /* HERO */
   .text-display-xl { font-size: 3rem; }
   .hero-sub { font-size: 0.65rem; letter-spacing: 0.2em; }
-
-  /* WORK */
   #work { padding: 72px 16px 16px; overflow-y: auto; }
   .section-heading { margin-bottom: 16px; }
   #work-grid { grid-template-columns: 1fr; grid-template-rows: auto; flex: none; }
   .project-tile { aspect-ratio: 16/9; min-height: unset; }
   .tile-info { opacity: 1; transform: translateY(0); }
-
-  /* ABOUT */
   #about { padding: 72px 24px; }
   .about-text { font-size: 0.95rem; }
-
-  /* CONTACT */
   .contact-link { font-size: clamp(1rem, 5vw, 1.8rem); }
-
-  /* DETAIL */
   .detail-inner { padding: 40px 56px; }
   #detail-side-prev { left: 6px; }
   #detail-side-next { right: 6px; }
@@ -267,7 +242,6 @@ nav {
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo">Madrid &nbsp;<span id="clock-hm"></span><span id="clock-s" style="color:var(--accent)"></span><span id="clock-ap"></span></div>
   <div class="nav-links">
@@ -277,13 +251,10 @@ nav {
   </div>
 </nav>
 
-<!-- SCROLL TRACK -->
 <div id="scroll-track"></div>
 
-<!-- STAGE -->
 <div id="stage">
 
-  <!-- 0: HERO -->
   <div id="hero" class="panel">
     <div id="hero-inner">
       <h1 class="text-display-xl">Carlota Díaz</h1>
@@ -291,28 +262,55 @@ nav {
     </div>
   </div>
 
-  <!-- 1: WORK -->
   <div id="work" class="panel">
     <p class="section-heading">Selected Works</p>
     <div id="work-grid">
-      <div class="project-tile" data-project="0"><div class="tile-info"><span class="tile-brand">Rexona</span><span class="tile-title">Won't let you down</span></div></div>
-      <div class="project-tile" data-project="1"><div class="tile-info"><span class="tile-brand">Licor 43</span><span class="tile-title">Mix somethin new</span></div></div>
-      <div class="project-tile" data-project="2"><div class="tile-info"><span class="tile-brand">Decathlon</span><span class="tile-title">Play it fair</span></div></div>
-      <div class="project-tile" data-project="3"><div class="tile-info"><span class="tile-brand">Lidl</span><span class="tile-title">Spilling the tea</span></div></div>
-      <div class="project-tile" data-project="4"><div class="tile-info"><span class="tile-brand">Old El Paso</span><span class="tile-title">Wrap it up</span></div></div>
-      <div class="project-tile" data-project="5"><div class="tile-info"><span class="tile-brand">GTA</span><span class="tile-title">Story mode</span></div></div>
-      <div class="project-tile" data-project="6"><div class="tile-info"><span class="tile-brand">Finetwork</span><span class="tile-title">Trust Issues</span></div></div>
-      <div class="project-tile" data-project="7"><div class="tile-info"><span class="tile-brand">Tinder</span><span class="tile-title">Movie maker</span></div></div>
+      <!-- 0: Rexona — sin vídeo en tile, solo color -->
+      <div class="project-tile" data-project="0">
+        <div class="tile-info"><span class="tile-brand">Rexona</span><span class="tile-title">Won't let you down</span></div>
+      </div>
+      <!-- 1: Licor 43 -->
+      <div class="project-tile" data-project="1">
+        <iframe class="tile-video" src="https://player.vimeo.com/video/1121896735?h=c33f2b6f20&autoplay=1&loop=1&muted=1&background=1" allow="autoplay; fullscreen"></iframe>
+        <div class="tile-info"><span class="tile-brand">Licor 43</span><span class="tile-title">Mix somethin new</span></div>
+      </div>
+      <!-- 2: Decathlon -->
+      <div class="project-tile" data-project="2">
+        <iframe class="tile-video" src="https://player.vimeo.com/video/1150349928?h=7ed6b714c0&autoplay=1&loop=1&muted=1&background=1" allow="autoplay; fullscreen"></iframe>
+        <div class="tile-info"><span class="tile-brand">Decathlon</span><span class="tile-title">Play it fair</span></div>
+      </div>
+      <!-- 3: Lidl -->
+      <div class="project-tile" data-project="3">
+        <iframe class="tile-video" src="https://player.vimeo.com/video/1150350157?h=7e1883989a&autoplay=1&loop=1&muted=1&background=1" allow="autoplay; fullscreen"></iframe>
+        <div class="tile-info"><span class="tile-brand">Lidl</span><span class="tile-title">Spilling the tea</span></div>
+      </div>
+      <!-- 4: Old El Paso -->
+      <div class="project-tile" data-project="4">
+        <iframe class="tile-video" src="https://player.vimeo.com/video/1150350324?h=a2e7f9d09e&autoplay=1&loop=1&muted=1&background=1" allow="autoplay; fullscreen"></iframe>
+        <div class="tile-info"><span class="tile-brand">Old El Paso</span><span class="tile-title">Wrap it up</span></div>
+      </div>
+      <!-- 5: GTA -->
+      <div class="project-tile" data-project="5">
+        <iframe class="tile-video" src="https://player.vimeo.com/video/1150350535?h=ac1f7705b0&autoplay=1&loop=1&muted=1&background=1" allow="autoplay; fullscreen"></iframe>
+        <div class="tile-info"><span class="tile-brand">GTA</span><span class="tile-title">Story mode</span></div>
+      </div>
+      <!-- 6: Finetwork -->
+      <div class="project-tile" data-project="6">
+        <iframe class="tile-video" src="https://player.vimeo.com/video/1150350806?h=a6f323edca&autoplay=1&loop=1&muted=1&background=1" allow="autoplay; fullscreen"></iframe>
+        <div class="tile-info"><span class="tile-brand">Finetwork</span><span class="tile-title">Trust Issues</span></div>
+      </div>
+      <!-- 7: Tinder — pendiente imágenes -->
+      <div class="project-tile" data-project="7">
+        <div class="tile-info"><span class="tile-brand">Tinder</span><span class="tile-title">Movie maker</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- 2: ABOUT -->
   <div id="about" class="panel">
     <p class="section-heading">About</p>
     <p class="about-text">Dirección de arte <span style="color:var(--accent)">junior</span>.<br>Catadora de ramen <span style="color:var(--accent)">senior</span>.<br>Chief Executive of <span style="color:var(--accent)">terracitas al sol</span>.</p>
   </div>
 
-  <!-- 3: CONTACT -->
   <div id="contact" class="panel">
     <p class="contact-heading">Vamos a tomarnos un <span id="contact-word">café</span></p>
     <a class="contact-link" href="mailto:carlota.diaz.pilas@gmail.com">Email</a>
@@ -322,10 +320,7 @@ nav {
 
 </div>
 
-<!-- ═══ PANEL DE DETALLE ÚNICO ═══ -->
 <div id="project-detail">
-
-  <!-- Barra superior -->
   <div id="detail-topbar">
     <button class="detail-back-btn" id="detail-back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
@@ -333,57 +328,77 @@ nav {
     </button>
     <span id="detail-counter"><span id="counter-current">1</span> / 8</span>
   </div>
-
-  <!-- Canvas: área con overflow hidden donde se solapan las tarjetas -->
   <div id="detail-canvas">
-
-    <!-- Flechas laterales -->
     <button class="detail-side-arrow" id="detail-side-prev" title="Proyecto anterior">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
     <button class="detail-side-arrow" id="detail-side-next" title="Proyecto siguiente">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
     </button>
-
-    <!-- Contenido scrollable actual -->
     <div id="detail-scroll">
-      <div id="detail-inner">
-        <div>
-          <p class="detail-brand" id="detail-brand-text"></p>
-          <h2 class="detail-title" id="detail-title-text"></h2>
-        </div>
-        <p class="detail-description" id="detail-desc-text"></p>
-        <div class="detail-video-wrap" id="detail-video-wrap">
-          <div class="detail-video-placeholder" id="detail-video-placeholder">Vídeo próximamente</div>
-        </div>
-      </div>
+      <div id="detail-inner"></div>
     </div>
-
   </div>
-
 </div>
 
 <script>
 // ─── DATOS DE PROYECTOS ───────────────────────────────────────────────────
 const PROJECTS = [
-  { brand: 'Rexona',     title: "Won't let you down", description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'Licor 43',   title: 'Mix somethin new',   description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'Decathlon',  title: 'Play it fair',        description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'Lidl',       title: 'Spilling the tea',    description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'Old El Paso',title: 'Wrap it up',          description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'GTA',        title: 'Story mode',          description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'Finetwork',  title: 'Trust Issues',        description: 'Descripción del proyecto — próximamente.', videoUrl: null },
-  { brand: 'Tinder',     title: 'Movie maker',         description: 'Descripción del proyecto — próximamente.', videoUrl: null },
+  {
+    brand: 'Rexona', title: "Won't let you down",
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'youtube-multi',
+    videoIds: ['ptWwKufXE2Y', 'Kc_oXiJgXJk', 'JQRkwIKFVpA']
+  },
+  {
+    brand: 'Licor 43', title: 'Mix somethin new',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1121896735?h=c33f2b6f20'
+  },
+  {
+    brand: 'Decathlon', title: 'Play it fair',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1150349928?h=7ed6b714c0'
+  },
+  {
+    brand: 'Lidl', title: 'Spilling the tea',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1150350157?h=7e1883989a'
+  },
+  {
+    brand: 'Old El Paso', title: 'Wrap it up',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1150350324?h=a2e7f9d09e'
+  },
+  {
+    brand: 'GTA', title: 'Story mode',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1150350535?h=ac1f7705b0'
+  },
+  {
+    brand: 'Finetwork', title: 'Trust Issues',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1150350806?h=a6f323edca'
+  },
+  {
+    brand: 'Tinder', title: 'Movie maker',
+    description: 'Descripción del proyecto — próximamente.',
+    type: 'images',
+    videoUrl: null
+  },
 ];
 
 const overlay      = document.getElementById('project-detail');
 const detailCanvas = document.getElementById('detail-canvas');
-const detailScroll = document.getElementById('detail-scroll');
-
 let currentIdx = -1;
 let isAnimating = false;
 
-// ─── RENDERIZAR CONTENIDO EN UN CONTENEDOR ───────────────────────────────
 function buildScrollDiv(idx) {
   const p = PROJECTS[idx];
   const div = document.createElement('div');
@@ -392,9 +407,8 @@ function buildScrollDiv(idx) {
   const inner = document.createElement('div');
   inner.className = 'detail-inner';
 
-  // Cabecera
   const header = document.createElement('div');
-  const brand  = document.createElement('p');
+  const brand = document.createElement('p');
   brand.className = 'detail-brand';
   brand.textContent = p.brand;
   const title = document.createElement('h2');
@@ -404,52 +418,64 @@ function buildScrollDiv(idx) {
   header.appendChild(brand);
   header.appendChild(title);
 
-  // Descripción
   const desc = document.createElement('p');
   desc.className = 'detail-description';
   desc.textContent = p.description;
 
-  // Vídeo
-  const videoWrap = document.createElement('div');
-  videoWrap.className = 'detail-video-wrap';
-  if (p.videoUrl) {
+  inner.appendChild(header);
+  inner.appendChild(desc);
+
+  if (p.type === 'vimeo' && p.videoUrl) {
+    const wrap = document.createElement('div');
+    wrap.className = 'detail-video-wrap';
     const iframe = document.createElement('iframe');
     iframe.src = p.videoUrl;
     iframe.allowFullscreen = true;
     iframe.allow = 'autoplay; fullscreen';
-    videoWrap.appendChild(iframe);
+    wrap.appendChild(iframe);
+    inner.appendChild(wrap);
+
+  } else if (p.type === 'youtube-multi') {
+    const grid = document.createElement('div');
+    grid.className = 'detail-videos-grid';
+    p.videoIds.forEach(id => {
+      const wrap = document.createElement('div');
+      wrap.className = 'detail-video-wrap';
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=0&controls=1&rel=0&modestbranding=1`;
+      iframe.allowFullscreen = true;
+      iframe.allow = 'autoplay; fullscreen';
+      wrap.appendChild(iframe);
+      grid.appendChild(wrap);
+    });
+    inner.appendChild(grid);
+
   } else {
+    const wrap = document.createElement('div');
+    wrap.className = 'detail-video-wrap';
     const ph = document.createElement('div');
     ph.className = 'detail-video-placeholder';
-    ph.textContent = 'Vídeo próximamente';
-    videoWrap.appendChild(ph);
+    ph.textContent = 'Próximamente';
+    wrap.appendChild(ph);
+    inner.appendChild(wrap);
   }
 
-  inner.appendChild(header);
-  inner.appendChild(desc);
-  inner.appendChild(videoWrap);
   div.appendChild(inner);
   return div;
 }
 
-// ─── ABRIR DETALLE ────────────────────────────────────────────────────────
 function openDetail(idx) {
   currentIdx = idx;
-
-  // Limpiar canvas y construir contenido inicial
   const existingScroll = document.getElementById('detail-scroll');
   if (existingScroll) existingScroll.remove();
-
   const newScroll = buildScrollDiv(idx);
   newScroll.id = 'detail-scroll';
   detailCanvas.appendChild(newScroll);
-
   document.getElementById('counter-current').textContent = idx + 1;
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 
-// ─── CERRAR DETALLE ───────────────────────────────────────────────────────
 function closeDetail() {
   overlay.classList.remove('active');
   document.body.style.overflow = '';
@@ -459,11 +485,9 @@ function closeDetail() {
   }, 800);
 }
 
-// ─── NAVEGAR — efecto tarjeta solapándose ─────────────────────────────────
 function navigateTo(newIdx, direction) {
   if (isAnimating) return;
   isAnimating = true;
-
   const incoming = buildScrollDiv(newIdx);
   incoming.style.position = 'absolute';
   incoming.style.inset = '0';
@@ -472,15 +496,10 @@ function navigateTo(newIdx, direction) {
   incoming.style.transition = 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
   incoming.style.zIndex = '5';
   detailCanvas.appendChild(incoming);
-
-  // Forzar reflow antes de animar
   incoming.getBoundingClientRect();
   incoming.style.transform = 'translateX(0)';
-
   document.getElementById('counter-current').textContent = newIdx + 1;
-
   setTimeout(() => {
-    // Reemplazar el scroll anterior con el incoming
     const oldScroll = document.getElementById('detail-scroll');
     if (oldScroll) oldScroll.remove();
     incoming.style.transition = '';
@@ -492,23 +511,19 @@ function navigateTo(newIdx, direction) {
   }, 750);
 }
 
-// ─── EVENTOS ──────────────────────────────────────────────────────────────
 document.getElementById('detail-back').addEventListener('click', closeDetail);
-
 document.getElementById('detail-side-prev').addEventListener('click', () => {
   navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
 });
 document.getElementById('detail-side-next').addEventListener('click', () => {
   navigateTo((currentIdx + 1) % PROJECTS.length, 'next');
 });
-
 document.addEventListener('keydown', e => {
   if (!overlay.classList.contains('active')) return;
   if (e.key === 'Escape')     closeDetail();
   if (e.key === 'ArrowRight') navigateTo((currentIdx + 1) % PROJECTS.length, 'next');
   if (e.key === 'ArrowLeft')  navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
 });
-
 document.querySelectorAll('.project-tile').forEach(tile => {
   tile.addEventListener('click', () => openDetail(parseInt(tile.dataset.project)));
 });
@@ -522,12 +537,9 @@ const contactEl   = document.getElementById('contact');
 const scrollTrack = document.getElementById('scroll-track');
 const TRANS = 0.65;
 
-// En móvil usamos innerHeight×2 como unidad de scroll para que las
-// transiciones requieran más recorrido y no se disparen por momentum.
 function scrollUnit() {
   return window.innerWidth < 768 ? window.innerHeight * 2 : window.innerWidth;
 }
-
 function setTrackHeight() {
   const SU = scrollUnit();
   scrollTrack.style.height = (3 * SU + window.innerHeight) + 'px';
@@ -542,7 +554,6 @@ let targetScroll = 0, currentScroll = 0, animating = false;
 window.addEventListener('scroll', () => {
   let sy = window.scrollY;
   const SU = scrollUnit();
-  // Móvil: no avanzar a About hasta haber llegado al fondo de Work
   if (window.innerWidth < 768 && sy > SU) {
     const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 10;
     if (!workAtBottom) {
@@ -554,7 +565,6 @@ window.addEventListener('scroll', () => {
   if (!animating) { animating = true; requestAnimationFrame(animate); }
 });
 
-// Móvil: redirigir scroll táctil a Work cuando no ha llegado al fondo
 if ('ontouchstart' in window) {
   let _ty = 0;
   document.addEventListener('touchstart', e => { _ty = e.touches[0].clientY; }, { passive: true });
@@ -564,7 +574,6 @@ if ('ontouchstart' in window) {
     const sy = window.scrollY;
     const dy = _ty - e.touches[0].clientY;
     _ty = e.touches[0].clientY;
-    // Work activa, bajando, y no llegó al fondo
     if (sy >= SU * TRANS * 0.7 && dy > 0) {
       const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 5;
       if (!workAtBottom) {
@@ -585,10 +594,8 @@ function animate() {
   const aP = clamp((s - SU) / T, 0, 1);
   const cP = clamp((s - 2 * SU) / T, 0, 1);
 
-  // Móvil: resetear scroll de Work cuando el usuario vuelve al hero
   if (window.innerWidth < 768 && wP < 0.05) workEl.scrollTop = 0;
 
-  // Work: zoom in, luego desaparece (partículas toman el relevo)
   workEl.style.transform     = `scale(${0.15 + wP * 0.85})`;
   workEl.style.opacity       = wP * Math.max(0, 1 - aP * 5);
   workEl.style.pointerEvents = wP > 0.5 && aP < 0.1 ? 'auto' : 'none';
@@ -597,14 +604,12 @@ function animate() {
   window._particleWP         = wP;
   if (window._workPx) window._workPx.render(aP);
 
-  // About: zoom in, luego desaparece (partículas toman el relevo)
   aboutEl.style.transform     = `scale(${0.15 + aP * 0.85})`;
   aboutEl.style.opacity       = aP * Math.max(0, 1 - cP * 5);
   aboutEl.style.pointerEvents = aP > 0.5 && cP < 0.1 ? 'auto' : 'none';
   aboutEl.style.filter        = '';
   if (window._aboutPx) window._aboutPx.render(cP);
 
-  // Contact: zoom in
   contactEl.style.transform     = `scale(${0.15 + cP * 0.85})`;
   contactEl.style.opacity       = cP;
   contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
@@ -613,7 +618,6 @@ function animate() {
   else animating = false;
 }
 
-// NAV LINKS
 const sectionMap = { work: 1, about: 2, contact: 3 };
 document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
@@ -629,15 +633,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   const hm   = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit', hour12: true });
   const secs = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Madrid', second: '2-digit', hour12: false }).padStart(2, '0');
   const ap   = now.toLocaleTimeString('en-US', { timeZone: 'Europe/Madrid', hour: 'numeric', hour12: true }).slice(-2).toLowerCase();
-  // hm viene como "06:37 AM" — nos quedamos solo con "06:37:"
   const hmClean = hm.replace(/\s*(AM|PM)/i, '');
   document.getElementById('clock-hm').textContent = hmClean + ':';
   document.getElementById('clock-s').textContent  = secs;
   document.getElementById('clock-ap').textContent = ' ' + ap;
   setTimeout(updateClock, 1000);
 })();
-
-
 
 // ─── PALABRA GIRATORIA EN CONTACT ────────────────────────────────────────
 (function cycleContactWord() {
@@ -654,7 +655,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   }, 2800);
 })();
 
-// ─── PARTÍCULAS DE SECCIÓN (Work → About, About → Contact) ───────────────
+// ─── PARTÍCULAS DE SECCIÓN ───────────────────────────────────────────────
 (function initSectionParticles() {
   const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+-=<>?/|\\';
 
@@ -667,15 +668,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   function buildWorkParticles(W, H) {
     const pts = [];
     const step = 7;
-
-    // 8 project tiles
     workEl.querySelectorAll('.project-tile').forEach(tile => {
       const r = tile.getBoundingClientRect();
       if (r.width === 0) return;
       for (let y = r.top; y < r.bottom; y += step) {
         for (let x = r.left; x < r.right; x += step) {
           if (Math.random() > 0.55) continue;
-          // color: naranja en franja inferior (marca+título), gris en resto
           const isBottom = y > r.bottom - 36;
           const color = isBottom ? (y > r.bottom - 20 ? '#c4c4c4' : '#E8571A') : `hsl(0,0%,${32 + Math.random() * 20 | 0}%)`;
           const { tx, ty } = scatter(x, y, W, H);
@@ -683,8 +681,6 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
         }
       }
     });
-
-    // Section heading
     const h = workEl.querySelector('.section-heading');
     if (h) {
       const r = h.getBoundingClientRect();
@@ -702,17 +698,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   function buildAboutParticles(W, H) {
     const pts = [];
     const step = 7;
-
     const txt = aboutEl.querySelector('.about-text');
     if (txt) {
       const r = txt.getBoundingClientRect();
       for (let y = r.top; y < r.bottom; y += step) {
         for (let x = r.left; x < r.right; x += step) {
           if (Math.random() > 0.5) continue;
-          // las 3 líneas: cada línea ~1.8em × 1.05rem ≈ 34px de alto
-          const lineH = (r.height / 3);
-          const lineIdx = Math.floor((y - r.top) / lineH);
-          // parte naranja aproximada (palabra accentuada en medio de cada línea)
           const midX = r.left + r.width * 0.35;
           const color = (x > midX && x < midX + r.width * 0.3) ? '#E8571A' : 'rgba(240,240,240,0.7)';
           const { tx, ty } = scatter(x, y, W, H);
@@ -720,7 +711,6 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
         }
       }
     }
-
     const h = aboutEl.querySelector('.section-heading');
     if (h) {
       const r = h.getBoundingClientRect();
@@ -741,7 +731,6 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
     let particles = [], built = false;
-
     return {
       render(progress) {
         if (progress > 0 && !built) {
@@ -779,8 +768,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
 (function initParticleHero() {
   const heroTitle = document.querySelector('.text-display-xl');
   const heroSub   = document.querySelector('.hero-sub');
-
-  heroTitle.style.opacity = '0'; // ocultar inmediatamente, antes de cargar fuentes
+  heroTitle.style.opacity = '0';
 
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:3;';
@@ -789,27 +777,21 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
 
   const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*+-=<>?/|\\';
   let particles = [], ready = false;
-  let mouseX = null, mouseY = null, isHovering = false;
+  let mouseX = null, mouseY = null;
 
   heroPanel.addEventListener('mousemove', e => {
     const rect = heroPanel.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
-    isHovering = true;
   });
-  heroPanel.addEventListener('mouseleave', () => {
-    mouseX = null; mouseY = null; isHovering = false;
-  });
+  heroPanel.addEventListener('mouseleave', () => { mouseX = null; mouseY = null; });
 
   function build() {
     const W = window.innerWidth, H = window.innerHeight;
     const dpr = window.devicePixelRatio || 1;
-    canvas.width  = W * dpr;
-    canvas.height = H * dpr;
-    canvas.style.width  = W + 'px';
-    canvas.style.height = H + 'px';
+    canvas.width  = W * dpr; canvas.height = H * dpr;
+    canvas.style.width  = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
     const off = document.createElement('canvas');
     off.width = W; off.height = H;
     const oc = off.getContext('2d');
@@ -819,11 +801,9 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     if (measured.width > W * 0.92) fs = fs * (W * 0.92 / measured.width);
     oc.font = `800 ${fs}px Syne, sans-serif`;
     oc.letterSpacing = '-0.04em';
-    oc.textAlign = 'center';
-    oc.textBaseline = 'middle';
+    oc.textAlign = 'center'; oc.textBaseline = 'middle';
     oc.fillStyle = '#fff';
     oc.fillText('CARLOTA DÍAZ', W / 2, H / 2);
-
     const data = oc.getImageData(0, 0, W, H).data;
     const isMobile = W < 768;
     const step = isMobile ? 3 : 6, newP = [];
@@ -834,10 +814,8 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
           const dist  = (0.15 + Math.random() * 0.85) * Math.max(W, H) * 1.2;
           newP.push({
             ox: x, oy: y, cx: x, cy: y, vx: 0, vy: 0,
-            tx: x + Math.cos(angle) * dist,
-            ty: y + Math.sin(angle) * dist,
-            char: CHARS[Math.random() * CHARS.length | 0],
-            timer: (Math.random() * 20) | 0
+            tx: x + Math.cos(angle) * dist, ty: y + Math.sin(angle) * dist,
+            char: CHARS[Math.random() * CHARS.length | 0], timer: (Math.random() * 20) | 0
           });
         }
       }
@@ -851,60 +829,43 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   window.addEventListener('resize', build);
   window._particleWP = 0;
 
-  // ── SNAKE ────────────────────────────────────────────────────────────────
   const CELL = 14;
   let snakeMode = false;
   let sn = {};
 
   function snakeFood() {
-    const M = 3; // margen desde bordes laterales/inferior
-    let f;
+    const M = 3; let f;
     do {
-      f = {
-        x: M + (Math.random() * (sn.cols - M * 2) | 0),
-        y: sn.topRow + M + (Math.random() * (sn.rows - sn.topRow - M * 2) | 0)
-      };
+      f = { x: M + (Math.random() * (sn.cols - M * 2) | 0), y: sn.topRow + M + (Math.random() * (sn.rows - sn.topRow - M * 2) | 0) };
     } while (sn.body.some(c => c.x === f.x && c.y === f.y));
     return f;
   }
 
   function snakeStart() {
     const W = window.innerWidth, H = window.innerHeight;
-    const navH = (document.querySelector('nav') || {}).getBoundingClientRect
-      ? document.querySelector('nav').getBoundingClientRect().height
-      : 60;
-    sn.cols   = Math.floor(W / CELL);
-    sn.rows   = Math.floor(H / CELL);
-    sn.topRow = Math.ceil(navH / CELL); // filas reservadas para el nav
+    const navH = document.querySelector('nav').getBoundingClientRect().height || 60;
+    sn.cols = Math.floor(W / CELL); sn.rows = Math.floor(H / CELL);
+    sn.topRow = Math.ceil(navH / CELL);
     const sx = sn.cols >> 1, sy = sn.topRow + ((sn.rows - sn.topRow) >> 1);
-    sn.body     = [{ x: sx, y: sy }, { x: sx - 1, y: sy }, { x: sx - 2, y: sy }];
-    sn.dir      = { dx: 1, dy: 0 };
-    sn.nextDir  = { dx: 1, dy: 0 };
-    sn.food     = snakeFood();
-    sn.score    = 0;
-    sn.over     = false;
-    sn.speed    = 130;
-    sn.lastStep = performance.now();
-    snakeMode   = true;
-    canvas.style.pointerEvents = 'none';
+    sn.body = [{ x: sx, y: sy }, { x: sx - 1, y: sy }, { x: sx - 2, y: sy }];
+    sn.dir = { dx: 1, dy: 0 }; sn.nextDir = { dx: 1, dy: 0 };
+    sn.food = snakeFood(); sn.score = 0; sn.over = false;
+    sn.speed = 130; sn.lastStep = performance.now();
+    snakeMode = true; canvas.style.pointerEvents = 'none';
   }
 
   function snakeStep() {
     if (sn.over) return;
     sn.dir = sn.nextDir;
     const head = sn.body[0];
-    const nx = head.x + sn.dir.dx;
-    const ny = head.y + sn.dir.dy;
+    const nx = head.x + sn.dir.dx, ny = head.y + sn.dir.dy;
     if (nx < 0 || nx >= sn.cols || ny < sn.topRow || ny >= sn.rows) { sn.over = true; return; }
     if (sn.body.slice(1).some(c => c.x === nx && c.y === ny)) { sn.over = true; return; }
     sn.body.unshift({ x: nx, y: ny });
     if (nx === sn.food.x && ny === sn.food.y) {
-      sn.score++;
-      sn.food = snakeFood();
+      sn.score++; sn.food = snakeFood();
       if (sn.speed > 55) sn.speed -= 4;
-    } else {
-      sn.body.pop();
-    }
+    } else { sn.body.pop(); }
   }
 
   function snakeDraw(W, H, now) {
@@ -922,15 +883,10 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       return;
     }
     if (now - sn.lastStep >= sn.speed) { snakeStep(); sn.lastStep = now; }
-
     ctx.font = `${CELL - 2}px monospace`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-
-    // Comida
     ctx.fillStyle = '#E8571A'; ctx.globalAlpha = 1;
     ctx.fillText('*', sn.food.x * CELL + CELL / 2, sn.food.y * CELL + CELL / 2);
-
-    // Serpiente
     const headChars = { '1,0': '>', '-1,0': '<', '0,-1': '^', '0,1': 'v' };
     sn.body.forEach((c, i) => {
       ctx.globalAlpha = Math.max(0.25, 1 - i * (0.6 / sn.body.length));
@@ -939,22 +895,18 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       ctx.fillText(ch, c.x * CELL + CELL / 2, c.y * CELL + CELL / 2);
     });
     ctx.globalAlpha = 1;
-
-    // Score + hint
     ctx.font = '11px monospace'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
     ctx.fillStyle = 'rgba(240,240,240,0.25)';
     ctx.fillText(`score  ${sn.score}`, 20, 20);
     ctx.fillText('[ esc ] salir', 20, 36);
   }
 
-  // Click en hero → activar snake (solo desktop)
   heroPanel.addEventListener('click', () => {
     if (window.innerWidth < 768 || (window._particleWP || 0) > 0.15) return;
     if (!snakeMode) { snakeStart(); return; }
     if (sn.over) snakeStart();
   });
 
-  // Teclado
   const DIR = {
     ArrowUp: { dx: 0, dy: -1 }, ArrowDown: { dx: 0, dy: 1 },
     ArrowLeft: { dx: -1, dy: 0 }, ArrowRight: { dx: 1, dy: 0 },
@@ -966,42 +918,25 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     if (e.key === 'Escape') { snakeMode = false; return; }
     if (e.key === 'Enter' && sn.over) { snakeStart(); return; }
     const d = DIR[e.key];
-    if (d && (d.dx + sn.dir.dx !== 0 || d.dy + sn.dir.dy !== 0)) {
-      sn.nextDir = d; e.preventDefault();
-    }
+    if (d && (d.dx + sn.dir.dx !== 0 || d.dy + sn.dir.dy !== 0)) { sn.nextDir = d; e.preventDefault(); }
   });
-  // ── FIN SNAKE ─────────────────────────────────────────────────────────────
 
   (function loop() {
     requestAnimationFrame(loop);
     if (!ready) return;
     const W = window.innerWidth, H = window.innerHeight;
-
-    // Snake toma el control del canvas
-    if (snakeMode) {
-      heroSub.style.opacity = '0';
-      snakeDraw(W, H, performance.now());
-      return;
-    }
-
+    if (snakeMode) { heroSub.style.opacity = '0'; snakeDraw(W, H, performance.now()); return; }
     const wP = window._particleWP || 0;
     const t = wP * wP * (3 - 2 * wP);
-
     heroSub.style.opacity = Math.max(0, 1 - wP * 3).toString();
-
     ctx.clearRect(0, 0, W, H);
     ctx.font = `${window.innerWidth < 768 ? 2 : 5}px monospace`;
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.fillStyle = '#f0f0f0';
-
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = '#f0f0f0';
     for (const p of particles) {
       const targetX = p.ox + (p.tx - p.ox) * t;
       const targetY = p.oy + (p.ty - p.oy) * t;
       p.vx += (targetX - p.cx) * 0.05;
       p.vy += (targetY - p.cy) * 0.05;
-
-      // Repulsión del cursor
       if (mouseX !== null && t < 0.2) {
         const dx = p.cx - mouseX, dy = p.cy - mouseY;
         const d2 = dx * dx + dy * dy;
@@ -1009,19 +944,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
         if (d2 < R * R && d2 > 0) {
           const d = Math.sqrt(d2);
           const force = ((R - d) / R) * 7;
-          p.vx += (dx / d) * force;
-          p.vy += (dy / d) * force;
+          p.vx += (dx / d) * force; p.vy += (dy / d) * force;
         }
       }
-
       p.vx *= 0.93; p.vy *= 0.93;
       p.cx += p.vx; p.cy += p.vy;
-
-      if (--p.timer <= 0) {
-        p.char  = CHARS[Math.random() * CHARS.length | 0];
-        p.timer = (8 + Math.random() * 20) | 0;
-      }
-
+      if (--p.timer <= 0) { p.char = CHARS[Math.random() * CHARS.length | 0]; p.timer = (8 + Math.random() * 20) | 0; }
       const alpha = Math.max(0, 1 - t * 1.4);
       if (alpha <= 0) continue;
       ctx.globalAlpha = alpha;

@@ -10,6 +10,7 @@
 <title>Carlota Díaz — AI Art Direction</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -341,6 +342,8 @@ nav {
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+gsap.registerPlugin(ScrollTrigger);
+
 // ─── DATOS DE PROYECTOS ───────────────────────────────────────────────────
 const PROJECTS = [
   {
@@ -646,6 +649,20 @@ function animate() {
 
 gsap.ticker.lagSmoothing(0);
 gsap.ticker.add(animate);
+
+// ─── WORK GRID STAGGER (ScrollTrigger) ───────────────────────────────────
+ScrollTrigger.create({
+  trigger: '#scroll-track',
+  start: () => `top+=${TRANS * scrollUnit() * 0.9} top`,
+  once: true,
+  onEnter: () => {
+    gsap.from('#work-grid .project-tile', {
+      y: 40, opacity: 0, duration: 0.7,
+      stagger: { amount: 0.5, from: 'start' },
+      ease: 'power3.out', clearProps: 'all'
+    });
+  }
+});
 
 const sectionMap = { work: 1, about: 2, contact: 3 };
 document.querySelectorAll('nav a[href^="#"]').forEach(link => {

@@ -9,6 +9,7 @@
 <meta property="og:type" content="website"/>
 <title>Carlota Díaz — AI Art Direction</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -570,7 +571,7 @@ window.addEventListener('resize', setTrackHeight);
 
 function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
 
-let targetScroll = 0, currentScroll = 0, animating = false;
+let targetScroll = 0, currentScroll = 0;
 
 window.addEventListener('scroll', () => {
   let sy = window.scrollY;
@@ -583,7 +584,6 @@ window.addEventListener('scroll', () => {
     }
   }
   targetScroll = sy;
-  if (!animating) { animating = true; requestAnimationFrame(animate); }
 });
 
 if ('ontouchstart' in window) {
@@ -605,8 +605,11 @@ if ('ontouchstart' in window) {
   }, { passive: false });
 }
 
+const easeSection = gsap.parseEase('power2.inOut');
+const easeBlur    = gsap.parseEase('power1.out');
+
 function animate() {
-  currentScroll += (targetScroll - currentScroll) * 0.05;
+  currentScroll += (targetScroll - currentScroll) * 0.08;
   const s = currentScroll;
   const SU = scrollUnit();
   const T = TRANS * SU;
@@ -615,29 +618,34 @@ function animate() {
   const aP = clamp((s - SU) / T, 0, 1);
   const cP = clamp((s - 2 * SU) / T, 0, 1);
 
+  // Eased variants para scale (las partículas y opacidades usan los valores raw)
+  const wE = easeSection(wP);
+  const aE = easeSection(aP);
+  const cE = easeSection(cP);
+
   if (window.innerWidth < 768 && wP < 0.05) workEl.scrollTop = 0;
 
-  workEl.style.transform     = `scale(${0.15 + wP * 0.85})`;
+  workEl.style.transform     = `scale(${0.15 + wE * 0.85})`;
   workEl.style.opacity       = wP * Math.max(0, 1 - aP * 5);
   workEl.style.pointerEvents = wP > 0.5 && aP < 0.1 ? 'auto' : 'none';
   workEl.style.filter        = '';
-  heroInner.style.filter     = `blur(${wP * 16}px)`;
+  heroInner.style.filter     = `blur(${easeBlur(wP) * 16}px)`;
   window._particleWP         = wP;
   if (window._workPx) window._workPx.render(aP);
 
-  aboutEl.style.transform     = `scale(${0.15 + aP * 0.85})`;
+  aboutEl.style.transform     = `scale(${0.15 + aE * 0.85})`;
   aboutEl.style.opacity       = aP * Math.max(0, 1 - cP * 5);
   aboutEl.style.pointerEvents = aP > 0.5 && cP < 0.1 ? 'auto' : 'none';
   aboutEl.style.filter        = '';
   if (window._aboutPx) window._aboutPx.render(cP);
 
-  contactEl.style.transform     = `scale(${0.15 + cP * 0.85})`;
+  contactEl.style.transform     = `scale(${0.15 + cE * 0.85})`;
   contactEl.style.opacity       = cP;
   contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
-
-  if (Math.abs(targetScroll - currentScroll) > 0.3) requestAnimationFrame(animate);
-  else animating = false;
 }
+
+gsap.ticker.lagSmoothing(0);
+gsap.ticker.add(animate);
 
 const sectionMap = { work: 1, about: 2, contact: 3 };
 document.querySelectorAll('nav a[href^="#"]').forEach(link => {

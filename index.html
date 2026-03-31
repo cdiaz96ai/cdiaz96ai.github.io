@@ -650,19 +650,51 @@ function animate() {
 gsap.ticker.lagSmoothing(0);
 gsap.ticker.add(animate);
 
-// ─── WORK GRID STAGGER (ScrollTrigger) ───────────────────────────────────
-ScrollTrigger.create({
-  trigger: '#scroll-track',
-  start: () => `top+=${TRANS * scrollUnit() * 0.9} top`,
-  once: true,
-  onEnter: () => {
-    gsap.from('#work-grid .project-tile', {
-      y: 40, opacity: 0, duration: 0.7,
-      stagger: { amount: 0.5, from: 'start' },
-      ease: 'power3.out', clearProps: 'all'
+// ─── CARD DEAL (ScrollTrigger scrub + GSAP timeline) ─────────────────────
+(function initCardDeal() {
+  const grid  = document.getElementById('work-grid');
+  const tiles = [...grid.querySelectorAll('.project-tile')];
+
+  // Rotaciones estables por sesión (no cambian en resize)
+  const rots = tiles.map(() => gsap.utils.random(-13, 13));
+
+  let activeST;
+
+  function build() {
+    if (activeST) activeST.kill();
+    gsap.set(tiles, { clearProps: 'all' });
+
+    const gW = grid.offsetWidth;
+    const gH = grid.offsetHeight;
+
+    // Timeline: cada carta vuela desde el centro hasta su celda del grid
+    const tl = gsap.timeline({ defaults: { duration: 0.9, ease: 'power3.out' } });
+
+    tiles.forEach((tile, i) => {
+      // Offset desde el centro del grid hasta el centro de cada tarjeta
+      const cx = gW / 2 - (tile.offsetLeft + tile.offsetWidth  / 2);
+      const cy = gH / 2 - (tile.offsetTop  + tile.offsetHeight / 2);
+
+      tl.from(tile,
+        { x: cx, y: cy, rotation: rots[i], opacity: 0 },
+        i * 0.12   // stagger: cada carta sale 0.12s después de la anterior
+      );
+    });
+
+    // ScrollTrigger vincula el progreso del timeline al scroll nativo
+    activeST = ScrollTrigger.create({
+      animation:           tl,
+      trigger:             '#scroll-track',
+      start:               'top top',
+      end:                 () => `+=${TRANS * scrollUnit()}`,
+      scrub:               0.6,           // suavidad al seguir el scroll
+      invalidateOnRefresh: true
     });
   }
-});
+
+  window.addEventListener('resize', build);
+  build();
+})();
 
 const sectionMap = { work: 1, about: 2, contact: 3 };
 document.querySelectorAll('nav a[href^="#"]').forEach(link => {

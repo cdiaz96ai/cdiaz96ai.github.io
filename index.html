@@ -956,4 +956,13 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       p.cx += p.vx; p.cy += p.vy;
       if (--p.timer <= 0) { p.char = CHARS[Math.random() * CHARS.length | 0]; p.timer = (8 + Math.random() * 20) | 0; }
       const alpha = Math.max(0, 1 - t * 1.4);
-      if (alpha
+      if (alpha <= 0) continue;
+      ctx.globalAlpha = alpha;
+      ctx.fillText(p.char, p.cx, p.cy);
+    }
+    ctx.globalAlpha = 1;
+  })();
+})();
+</script>
+</body>
+</html>

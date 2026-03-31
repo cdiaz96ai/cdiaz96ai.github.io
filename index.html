@@ -9,7 +9,6 @@
 <meta property="og:type" content="website"/>
 <title>Carlota Díaz — AI Art Direction</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -79,7 +78,6 @@ html, body {
   position: relative; background: var(--grid-bg); border-radius: 2px;
   min-height: 0; overflow: hidden; cursor: pointer;
   transition: background 0.3s ease, outline 0.3s ease;
-  will-change: transform;
 }
 .project-tile:hover { background: #242424; outline: 1px solid rgba(232,87,26,0.4); }
 .project-tile:hover .tile-info { opacity: 1; transform: translateY(0); }
@@ -138,8 +136,11 @@ nav {
 #project-detail {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: var(--bg); z-index: 200;
+  transform: translateX(100vw);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex; flex-direction: column; overflow: hidden;
 }
+#project-detail.active { transform: translateX(0); }
 
 #detail-topbar {
   flex-shrink: 0;
@@ -395,7 +396,6 @@ const overlay      = document.getElementById('project-detail');
 const detailCanvas = document.getElementById('detail-canvas');
 let currentIdx = -1;
 let isAnimating = false;
-gsap.set(overlay, { x: '100vw' });
 
 function buildScrollDiv(idx) {
   const p = PROJECTS[idx];
@@ -470,45 +470,43 @@ function openDetail(idx) {
   newScroll.id = 'detail-scroll';
   detailCanvas.appendChild(newScroll);
   document.getElementById('counter-current').textContent = idx + 1;
+  overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
-  gsap.to(overlay, { x: 0, duration: 0.75, ease: 'expo.out' });
-  gsap.from(newScroll.querySelectorAll('.detail-brand, .detail-title, .detail-description'), {
-    y: 28, opacity: 0, duration: 0.55, stagger: 0.1, ease: 'power3.out', delay: 0.35
-  });
 }
 
 function closeDetail() {
-  gsap.to(overlay, {
-    x: '100vw', duration: 0.6, ease: 'power3.in',
-    onComplete() {
-      document.body.style.overflow = '';
-      const s = document.getElementById('detail-scroll');
-      if (s) s.scrollTop = 0;
-    }
-  });
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  setTimeout(() => {
+    const s = document.getElementById('detail-scroll');
+    if (s) s.scrollTop = 0;
+  }, 800);
 }
 
 function navigateTo(newIdx, direction) {
   if (isAnimating) return;
   isAnimating = true;
   const incoming = buildScrollDiv(newIdx);
-  incoming.style.cssText = 'position:absolute;inset:0;background:#0a0a0a;z-index:5;overflow-y:auto;';
+  incoming.style.position = 'absolute';
+  incoming.style.inset = '0';
+  incoming.style.background = '#0a0a0a';
+  incoming.style.transform = direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+  incoming.style.transition = 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)';
+  incoming.style.zIndex = '5';
   detailCanvas.appendChild(incoming);
+  incoming.getBoundingClientRect();
+  incoming.style.transform = 'translateX(0)';
   document.getElementById('counter-current').textContent = newIdx + 1;
-  gsap.fromTo(incoming,
-    { x: direction === 'next' ? '100%' : '-100%' },
-    {
-      x: 0, duration: 0.75, ease: 'expo.out',
-      onComplete() {
-        const oldScroll = document.getElementById('detail-scroll');
-        if (oldScroll) oldScroll.remove();
-        gsap.set(incoming, { clearProps: 'x,zIndex' });
-        incoming.id = 'detail-scroll';
-        currentIdx  = newIdx;
-        isAnimating = false;
-      }
-    }
-  );
+  setTimeout(() => {
+    const oldScroll = document.getElementById('detail-scroll');
+    if (oldScroll) oldScroll.remove();
+    incoming.style.transition = '';
+    incoming.style.transform  = '';
+    incoming.style.zIndex     = '';
+    incoming.id = 'detail-scroll';
+    currentIdx  = newIdx;
+    isAnimating = false;
+  }, 750);
 }
 
 document.getElementById('detail-back').addEventListener('click', closeDetail);
@@ -526,12 +524,6 @@ document.addEventListener('keydown', e => {
 });
 document.querySelectorAll('.project-tile').forEach(tile => {
   tile.addEventListener('click', () => openDetail(parseInt(tile.dataset.project)));
-  tile.addEventListener('mouseenter', () =>
-    gsap.to(tile, { scale: 1.025, duration: 0.35, ease: 'power2.out', overwrite: 'auto' })
-  );
-  tile.addEventListener('mouseleave', () =>
-    gsap.to(tile, { scale: 1, duration: 0.4, ease: 'power2.out', overwrite: 'auto' })
-  );
 });
 
 // Insertar iframes de vídeo en todos los tiles al cargar
@@ -579,7 +571,6 @@ window.addEventListener('resize', setTrackHeight);
 function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
 
 let targetScroll = 0, currentScroll = 0, animating = false;
-let workRevealed = false, aboutRevealed = false, contactRevealed = false;
 
 window.addEventListener('scroll', () => {
   let sy = window.scrollY;
@@ -625,22 +616,6 @@ function animate() {
   const cP = clamp((s - 2 * SU) / T, 0, 1);
 
   if (window.innerWidth < 768 && wP < 0.05) workEl.scrollTop = 0;
-
-  // ── GSAP section reveals ──
-  if (wP > 0.93 && !workRevealed) {
-    workRevealed = true;
-    gsap.from('#work .project-tile', { scale: 0.92, opacity: 0, duration: 0.5, stagger: 0.06, ease: 'power2.out' });
-  }
-  if (aP > 0.93 && !aboutRevealed) {
-    aboutRevealed = true;
-    gsap.from('#about .about-text', { y: 24, opacity: 0, duration: 0.7, ease: 'power3.out' });
-  }
-  if (cP > 0.93 && !contactRevealed) {
-    contactRevealed = true;
-    gsap.from('.contact-heading',  { opacity: 0, y: 16, duration: 0.6, ease: 'power2.out' });
-    gsap.from('.contact-link',     { y: 20, opacity: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out', delay: 0.25 });
-    gsap.from('.contact-footer',   { opacity: 0, duration: 0.5, delay: 0.55 });
-  }
 
   workEl.style.transform     = `scale(${0.15 + wP * 0.85})`;
   workEl.style.opacity       = wP * Math.max(0, 1 - aP * 5);
@@ -871,14 +846,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     ready = true;
   }
 
-  document.fonts.ready.then(() => {
-    build();
-    gsap.set('nav', { y: -30, opacity: 0 });
-    gsap.set('.hero-sub', { y: 12, opacity: 0 });
-    gsap.timeline({ delay: 0.15 })
-      .to('nav',       { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' })
-      .to('.hero-sub', { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, 0.5);
-  });
+  document.fonts.ready.then(build);
   window.addEventListener('resize', build);
   window._particleWP = 0;
 

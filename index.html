@@ -83,7 +83,11 @@ html, body {
 .project-tile:hover .tile-info { opacity: 1; transform: translateY(0); }
 
 .tile-video {
-  position: absolute; inset: 0; width: 100%; height: 100%;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 177.78%; height: 177.78%;
+  min-width: 100%; min-height: 100%;
   border: none; pointer-events: none;
 }
 
@@ -265,8 +269,9 @@ nav {
   <div id="work" class="panel">
     <p class="section-heading">Selected Works</p>
     <div id="work-grid">
-      <!-- 0: Rexona — sin vídeo en tile, solo color -->
+      <!-- 0: Rexona -->
       <div class="project-tile" data-project="0">
+        <iframe class="tile-video" src="https://www.youtube.com/embed/ptWwKufXE2Y?autoplay=1&mute=1&loop=1&playlist=ptWwKufXE2Y&controls=0&rel=0&modestbranding=1&playsinline=1" allow="autoplay; fullscreen"></iframe>
         <div class="tile-info"><span class="tile-brand">Rexona</span><span class="tile-title">Won't let you down</span></div>
       </div>
       <!-- 1: Licor 43 -->
@@ -313,7 +318,7 @@ nav {
 
   <div id="contact" class="panel">
     <p class="contact-heading">Vamos a tomarnos un <span id="contact-word">café</span></p>
-    <a class="contact-link" href="mailto:carlota.diaz.pilas@gmail.com">Email</a>
+    <a class="contact-link" href="/cdn-cgi/l/email-protection#1e7d7f6c72716a7f307a777f64306e77727f6d5e79737f7772307d7173">Email</a>
     <a class="contact-link" href="https://www.linkedin.com/in/carlota-d%C3%ADaz-pilas-168a85235" target="_blank" rel="noopener">LinkedIn</a>
     <p class="contact-footer">© Carlota Díaz</p>
   </div>
@@ -341,7 +346,7 @@ nav {
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ─── DATOS DE PROYECTOS ───────────────────────────────────────────────────
 const PROJECTS = [
   {
@@ -951,13 +956,4 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
       p.cx += p.vx; p.cy += p.vy;
       if (--p.timer <= 0) { p.char = CHARS[Math.random() * CHARS.length | 0]; p.timer = (8 + Math.random() * 20) | 0; }
       const alpha = Math.max(0, 1 - t * 1.4);
-      if (alpha <= 0) continue;
-      ctx.globalAlpha = alpha;
-      ctx.fillText(p.char, p.cx, p.cy);
-    }
-    ctx.globalAlpha = 1;
-  })();
-})();
-</script>
-</body>
-</html>
+      if (alpha

@@ -650,50 +650,48 @@ function animate() {
 gsap.ticker.lagSmoothing(0);
 gsap.ticker.add(animate);
 
-// ─── CARD DEAL (ScrollTrigger scrub + GSAP timeline) ─────────────────────
+// ─── CARD DEAL (disparo único cuando Work es visible) ─────────────────────
 (function initCardDeal() {
   const grid  = document.getElementById('work-grid');
   const tiles = [...grid.querySelectorAll('.project-tile')];
 
-  // Rotaciones estables por sesión (no cambian en resize)
-  const rots = tiles.map(() => gsap.utils.random(-13, 13));
+  // Rotaciones fijas por sesión — grandes y variadas para que se note
+  const rots = tiles.map(() => gsap.utils.random(-30, 30));
 
-  let activeST;
-
-  function build() {
-    if (activeST) activeST.kill();
-    gsap.set(tiles, { clearProps: 'all' });
-
-    const gW = grid.offsetWidth;
-    const gH = grid.offsetHeight;
-
-    // Timeline: cada carta vuela desde el centro hasta su celda del grid
-    const tl = gsap.timeline({ defaults: { duration: 0.9, ease: 'power3.out' } });
-
-    tiles.forEach((tile, i) => {
-      // Offset desde el centro del grid hasta el centro de cada tarjeta
-      const cx = gW / 2 - (tile.offsetLeft + tile.offsetWidth  / 2);
-      const cy = gH / 2 - (tile.offsetTop  + tile.offsetHeight / 2);
-
-      tl.from(tile,
-        { x: cx, y: cy, rotation: rots[i], opacity: 0 },
-        i * 0.12   // stagger: cada carta sale 0.12s después de la anterior
-      );
-    });
-
-    // ScrollTrigger vincula el progreso del timeline al scroll nativo
-    activeST = ScrollTrigger.create({
-      animation:           tl,
-      trigger:             '#scroll-track',
-      start:               'top top',
-      end:                 () => `+=${TRANS * scrollUnit()}`,
-      scrub:               0.6,           // suavidad al seguir el scroll
-      invalidateOnRefresh: true
+  // Apila todas las cartas en el centro del grid
+  function stack() {
+    const gW = grid.offsetWidth, gH = grid.offsetHeight;
+    tiles.forEach((t, i) => {
+      const cx = gW / 2 - (t.offsetLeft + t.offsetWidth  / 2);
+      const cy = gH / 2 - (t.offsetTop  + t.offsetHeight / 2);
+      gsap.set(t, { x: cx, y: cy, rotation: rots[i], scale: 0.88, opacity: 0 });
     });
   }
 
-  window.addEventListener('resize', build);
-  build();
+  let done = false;
+
+  // Reparte las cartas desde el centro a sus celdas del grid
+  function deal() {
+    done = true;
+    const tl = gsap.timeline();
+    tiles.forEach((t, i) => {
+      tl.to(t, {
+        x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
+        duration: 0.75,
+        ease: 'power4.out'
+      }, i * 0.13);   // stagger visible entre cartas
+    });
+  }
+
+  stack();
+  window.addEventListener('resize', () => { done = false; stack(); });
+
+  // window._particleWP es el progreso de scroll del Work (0→1), ya lo escribe animate()
+  gsap.ticker.add(() => {
+    const wP = window._particleWP || 0;
+    if (wP < 0.15) done = false;          // resetea si el usuario vuelve al hero
+    if (wP >= 1 && !done) deal();          // dispara solo cuando Work ocupa el 100% de pantalla
+  });
 })();
 
 const sectionMap = { work: 1, about: 2, contact: 3 };

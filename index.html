@@ -650,48 +650,45 @@ function animate() {
 gsap.ticker.lagSmoothing(0);
 gsap.ticker.add(animate);
 
-// ─── CARD DEAL (disparo único cuando Work es visible) ─────────────────────
+// ─── CARD DEAL (scrub atado al scroll) ───────────────────────────────────
 (function initCardDeal() {
   const grid  = document.getElementById('work-grid');
   const tiles = [...grid.querySelectorAll('.project-tile')];
+  const rots  = tiles.map(() => gsap.utils.random(-30, 30));
 
-  // Rotaciones fijas por sesión — grandes y variadas para que se note
-  const rots = tiles.map(() => gsap.utils.random(-30, 30));
+  let st;
 
-  // Apila todas las cartas en el centro del grid
-  function stack() {
+  function build() {
+    if (st) st.kill();
+    gsap.set(tiles, { clearProps: 'all' });
+
     const gW = grid.offsetWidth, gH = grid.offsetHeight;
+
+    // Timeline: cada carta va desde el centro apilado hasta su celda
+    const tl = gsap.timeline();
     tiles.forEach((t, i) => {
       const cx = gW / 2 - (t.offsetLeft + t.offsetWidth  / 2);
       const cy = gH / 2 - (t.offsetTop  + t.offsetHeight / 2);
-      gsap.set(t, { x: cx, y: cy, rotation: rots[i], scale: 0.88, opacity: 0 });
+      tl.from(t,
+        { x: cx, y: cy, rotation: rots[i], scale: 0.88, opacity: 0, ease: 'power4.out' },
+        i * 0.13
+      );
+    });
+
+    // ScrollTrigger: empieza cuando Work ocupa el 100% de pantalla
+    // (scroll nativo llega a TRANS * scrollUnit(), que es cuando wP === 1)
+    st = ScrollTrigger.create({
+      animation:           tl,
+      trigger:             '#scroll-track',
+      start:               () => `top+=${TRANS * scrollUnit()} top`,
+      end:                 () => `top+=${TRANS * scrollUnit() * 1.5} top`,
+      scrub:               0.8,
+      invalidateOnRefresh: true
     });
   }
 
-  let done = false;
-
-  // Reparte las cartas desde el centro a sus celdas del grid
-  function deal() {
-    done = true;
-    const tl = gsap.timeline();
-    tiles.forEach((t, i) => {
-      tl.to(t, {
-        x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
-        duration: 0.75,
-        ease: 'power4.out'
-      }, i * 0.13);   // stagger visible entre cartas
-    });
-  }
-
-  stack();
-  window.addEventListener('resize', () => { done = false; stack(); });
-
-  // window._particleWP es el progreso de scroll del Work (0→1), ya lo escribe animate()
-  gsap.ticker.add(() => {
-    const wP = window._particleWP || 0;
-    if (wP < 0.15) done = false;          // resetea si el usuario vuelve al hero
-    if (wP >= 1 && !done) deal();          // dispara solo cuando Work ocupa el 100% de pantalla
-  });
+  build();
+  window.addEventListener('resize', build);
 })();
 
 const sectionMap = { work: 1, about: 2, contact: 3 };

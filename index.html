@@ -94,6 +94,7 @@ html, body {
 }
 
 .tile-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.8; transition: opacity 0.3s ease; }
+.tile-gif { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .tile-info {
   position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 14px;
   background: rgba(0,0,0,0.82);
@@ -199,6 +200,7 @@ nav {
   background: var(--bg-alt); border-radius: 4px; overflow: hidden;
 }
 .detail-video-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+.detail-video-wrap img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .detail-video-placeholder {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
@@ -299,9 +301,9 @@ nav {
       <div class="project-tile" data-project="6">
         <div class="tile-info"><span class="tile-brand">Finetwork</span><span class="tile-title">Trust Issues</span></div>
       </div>
-      <!-- 7: Tinder — pendiente imágenes -->
+      <!-- 7: Cervezas El Águila -->
       <div class="project-tile" data-project="7">
-        <div class="tile-info"><span class="tile-brand">Tinder</span><span class="tile-title">Movie maker</span></div>
+        <div class="tile-info"><span class="tile-brand">Cervezas El Águila</span><span class="tile-title">Free as a Bird</span></div>
       </div>
     </div>
   </div>
@@ -348,51 +350,43 @@ gsap.registerPlugin(ScrollTrigger);
 const PROJECTS = [
   {
     brand: 'Rexona', title: "Won't let you down",
-    description: 'Descripción del proyecto — próximamente.',
     type: 'youtube-multi',
     videoIds: ['ptWwKufXE2Y', 'Kc_oXiJgXJk', 'JQRkwIKFVpA']
   },
   {
     brand: 'Licor 43', title: 'Mix somethin new',
-    description: 'Descripción del proyecto — próximamente.',
     type: 'vimeo',
     videoUrl: 'https://player.vimeo.com/video/1121896735?h=c33f2b6f20'
   },
   {
     brand: 'Decathlon', title: 'Play it fair',
-    description: 'Descripción del proyecto — próximamente.',
     type: 'vimeo',
     videoUrl: 'https://player.vimeo.com/video/1150349928?h=7ed6b714c0'
   },
   {
     brand: 'Lidl', title: 'Spilling the tea',
-    description: 'Descripción del proyecto — próximamente.',
     type: 'vimeo',
     videoUrl: 'https://player.vimeo.com/video/1150350157?h=7e1883989a'
   },
   {
     brand: 'Old El Paso', title: 'Wrap it up',
-    description: 'Descripción del proyecto — próximamente.',
     type: 'vimeo',
     videoUrl: 'https://player.vimeo.com/video/1150350324?h=a2e7f9d09e'
   },
   {
     brand: 'GTA', title: 'Story mode',
-    description: 'Descripción del proyecto — próximamente.',
     type: 'vimeo',
     videoUrl: 'https://player.vimeo.com/video/1150350535?h=ac1f7705b0'
   },
   {
     brand: 'Finetwork', title: 'Trust Issues',
-    description: 'Descripción del proyecto — próximamente.',
     type: 'vimeo',
     videoUrl: 'https://player.vimeo.com/video/1150350806?h=a6f323edca'
   },
   {
-    brand: 'Tinder', title: 'Movie maker',
-    description: 'Descripción del proyecto — próximamente.',
-    type: 'images',
-    videoUrl: null
+    brand: 'Cervezas El Águila', title: 'Free as a Bird',
+    type: 'gif',
+    gifUrl: 'https://raw.githubusercontent.com/cdiaz96ai/cdiaz96ai.github.io/main/aguila-board-gif.gif'
   },
 ];
 
@@ -420,12 +414,7 @@ function buildScrollDiv(idx) {
   header.appendChild(brand);
   header.appendChild(title);
 
-  const desc = document.createElement('p');
-  desc.className = 'detail-description';
-  desc.textContent = p.description;
-
   inner.appendChild(header);
-  inner.appendChild(desc);
 
   if (p.type === 'vimeo' && p.videoUrl) {
     const wrap = document.createElement('div');
@@ -451,6 +440,15 @@ function buildScrollDiv(idx) {
       grid.appendChild(wrap);
     });
     inner.appendChild(grid);
+
+  } else if (p.type === 'gif' && p.gifUrl) {
+    const wrap = document.createElement('div');
+    wrap.className = 'detail-video-wrap';
+    const img = document.createElement('img');
+    img.src = p.gifUrl;
+    img.alt = `${p.brand} — ${p.title}`;
+    wrap.appendChild(img);
+    inner.appendChild(wrap);
 
   } else {
     const wrap = document.createElement('div');
@@ -550,6 +548,12 @@ PROJECTS.forEach((p, idx) => {
     iframe.allow = 'autoplay; fullscreen';
     iframe.setAttribute('frameborder', '0');
     tile.insertBefore(iframe, tile.firstChild);
+  } else if (p.type === 'gif' && p.gifUrl) {
+    const img = document.createElement('img');
+    img.className = 'tile-gif';
+    img.src = p.gifUrl;
+    img.alt = `${p.brand} — ${p.title}`;
+    tile.insertBefore(img, tile.firstChild);
   }
 });
 

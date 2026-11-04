@@ -73,7 +73,7 @@ html, body {
 }
 
 #work-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: 8px; flex: 1; min-height: 0; width: 100%;
 }
 .project-tile {
@@ -273,36 +273,40 @@ nav {
   <div id="work" class="panel">
     <p class="section-heading">Selected Works</p>
     <div id="work-grid">
-      <!-- 0: Rexona -->
+      <!-- 0: Oysters AI -->
       <div class="project-tile" data-project="0">
+        <div class="tile-info"><span class="tile-brand">OYSTERS AI</span><span class="tile-title">STOP BEING AVERAGE</span></div>
+      </div>
+      <!-- 1: Rexona -->
+      <div class="project-tile" data-project="1">
         <div class="tile-info"><span class="tile-brand">Rexona</span><span class="tile-title">Won't let you down</span></div>
       </div>
-      <!-- 1: Licor 43 -->
-      <div class="project-tile" data-project="1">
+      <!-- 2: Licor 43 -->
+      <div class="project-tile" data-project="2">
         <div class="tile-info"><span class="tile-brand">Licor 43</span><span class="tile-title">Mix somethin new</span></div>
       </div>
-      <!-- 2: Decathlon -->
-      <div class="project-tile" data-project="2">
+      <!-- 3: Decathlon -->
+      <div class="project-tile" data-project="3">
         <div class="tile-info"><span class="tile-brand">Decathlon</span><span class="tile-title">Play it fair</span></div>
       </div>
-      <!-- 3: Lidl -->
-      <div class="project-tile" data-project="3">
+      <!-- 4: Lidl -->
+      <div class="project-tile" data-project="4">
         <div class="tile-info"><span class="tile-brand">Lidl</span><span class="tile-title">Spilling the tea</span></div>
       </div>
-      <!-- 4: Old El Paso -->
-      <div class="project-tile" data-project="4">
+      <!-- 5: Old El Paso -->
+      <div class="project-tile" data-project="5">
         <div class="tile-info"><span class="tile-brand">Old El Paso</span><span class="tile-title">Wrap it up</span></div>
       </div>
-      <!-- 5: GTA -->
-      <div class="project-tile" data-project="5">
+      <!-- 6: GTA -->
+      <div class="project-tile" data-project="6">
         <div class="tile-info"><span class="tile-brand">GTA</span><span class="tile-title">Story mode</span></div>
       </div>
-      <!-- 6: Finetwork -->
-      <div class="project-tile" data-project="6">
+      <!-- 7: Finetwork -->
+      <div class="project-tile" data-project="7">
         <div class="tile-info"><span class="tile-brand">Finetwork</span><span class="tile-title">Trust Issues</span></div>
       </div>
-      <!-- 7: Cervezas El Águila -->
-      <div class="project-tile" data-project="7">
+      <!-- 8: Cervezas El Águila -->
+      <div class="project-tile" data-project="8">
         <div class="tile-info"><span class="tile-brand">Cervezas El Águila</span><span class="tile-title">Free as a Bird</span></div>
       </div>
     </div>
@@ -328,7 +332,7 @@ nav {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       Back
     </button>
-    <span id="detail-counter"><span id="counter-current">1</span> / 8</span>
+    <span id="detail-counter"><span id="counter-current">1</span> / 9</span>
   </div>
   <div id="detail-canvas">
     <button class="detail-side-arrow" id="detail-side-prev" title="Proyecto anterior">
@@ -348,6 +352,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 // ─── DATOS DE PROYECTOS ───────────────────────────────────────────────────
 const PROJECTS = [
+  {
+    brand: 'OYSTERS AI', title: 'STOP BEING AVERAGE',
+    type: 'vimeo',
+    videoUrl: 'https://player.vimeo.com/video/1243198764'
+  },
   {
     brand: 'Rexona', title: "Won't let you down",
     type: 'youtube-multi',

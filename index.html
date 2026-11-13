@@ -18,7 +18,7 @@
   --bg:      #0a0a0a;
   --bg-alt:  #111111;
   --text:    #f0f0f0;
-  --muted:   rgba(240,240,240,0.4);
+  --muted:   rgba(240,240,240,0.55);
   --line:    rgba(240,240,240,0.12);
   --grid-bg: #1c1c1c;
   --accent:  #E8571A;
@@ -35,11 +35,11 @@ html, body {
 }
 
 #scroll-track { position: relative; z-index: 0; }
-#stage { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; }
+#stage { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; }
 
 .panel {
   position: absolute; top: 0; left: 0;
-  width: 100vw; height: 100vh; overflow: hidden;
+  width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;
 }
 
 #hero { z-index: 1; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; }
@@ -82,7 +82,14 @@ html, body {
   transition: background 0.3s ease, outline 0.3s ease;
 }
 .project-tile:hover { background: #242424; outline: 1px solid rgba(232,87,26,0.4); }
-.project-tile:hover .tile-info { opacity: 1; transform: translateY(0); }
+.project-tile:hover .tile-info,
+.project-tile:focus-visible .tile-info { opacity: 1; transform: translateY(0); }
+.project-tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Pantallas sin ratón (iPad y tablets): no hay hover, los títulos se ven siempre */
+@media (hover: none) {
+  .tile-info { opacity: 1; transform: translateY(0); }
+}
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
 .tile-video {
   position: absolute;
@@ -95,6 +102,8 @@ html, body {
 
 .tile-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.8; transition: opacity 0.3s ease; }
 .tile-gif { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile-cover { z-index: 1; transition: opacity 0.6s ease; }
+.tile-cover.hidden { opacity: 0; }
 .tile-info {
   position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 14px;
   background: rgba(0,0,0,0.82);
@@ -137,7 +146,7 @@ nav {
 .nav-links a:hover { color: var(--accent); }
 
 #project-detail {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
   background: var(--bg); z-index: 200;
   transform: translateX(100vw);
   transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
@@ -228,7 +237,9 @@ nav {
   nav { padding: 14px 20px; }
   .nav-logo { font-size: 0.72rem; }
   .nav-links { gap: 14px; }
-  .nav-links a { font-size: 0.62rem; letter-spacing: 0.1em; }
+  /* Zona táctil de ~45px de alto sin mover el diseño: el padding la amplía
+     y el margen negativo lo compensa */
+  .nav-links a { font-size: 0.62rem; letter-spacing: 0.1em; padding: 16px 6px; margin: -16px -6px; }
   .text-display-xl { font-size: 3rem; }
   .hero-sub { font-size: 0.65rem; letter-spacing: 0.2em; }
   #work { padding: 72px 16px 16px; overflow-y: auto; }
@@ -319,27 +330,27 @@ nav {
 
   <div id="contact" class="panel">
     <p class="contact-heading">Vamos a tomarnos un <span id="contact-word">café</span></p>
-    <a class="contact-link" href="/cdn-cgi/l/email-protection#1e7d7f6c72716a7f307a777f64306e77727f6d5e79737f7772307d7173">Email</a>
+    <a class="contact-link" href="mailto:carlota.diaz.pilas@gmail.com">Email</a>
     <a class="contact-link" href="https://www.linkedin.com/in/carlota-d%C3%ADaz-pilas-168a85235" target="_blank" rel="noopener">LinkedIn</a>
     <p class="contact-footer">© Carlota Díaz</p>
   </div>
 
 </div>
 
-<div id="project-detail">
+<div id="project-detail" role="dialog" aria-modal="true" aria-label="Proyecto" inert>
   <div id="detail-topbar">
     <button class="detail-back-btn" id="detail-back">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
       Back
     </button>
     <span id="detail-counter"><span id="counter-current">1</span> / 9</span>
   </div>
   <div id="detail-canvas">
-    <button class="detail-side-arrow" id="detail-side-prev" title="Proyecto anterior">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    <button class="detail-side-arrow" id="detail-side-prev" title="Proyecto anterior" aria-label="Proyecto anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button class="detail-side-arrow" id="detail-side-next" title="Proyecto siguiente">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    <button class="detail-side-arrow" id="detail-side-next" title="Proyecto siguiente" aria-label="Proyecto siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M9 18l6-6-6-6"/></svg>
     </button>
     <div id="detail-scroll">
       <div id="detail-inner"></div>
@@ -347,7 +358,7 @@ nav {
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 gsap.registerPlugin(ScrollTrigger);
 
 // ─── DATOS DE PROYECTOS ───────────────────────────────────────────────────
@@ -430,6 +441,7 @@ function buildScrollDiv(idx) {
     wrap.className = 'detail-video-wrap';
     const iframe = document.createElement('iframe');
     iframe.src = p.videoUrl;
+    iframe.title = `${p.brand} — ${p.title}`;
     iframe.allowFullscreen = true;
     iframe.allow = 'autoplay; fullscreen';
     wrap.appendChild(iframe);
@@ -442,7 +454,8 @@ function buildScrollDiv(idx) {
       const wrap = document.createElement('div');
       wrap.className = 'detail-video-wrap';
       const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=0&controls=1&rel=0&modestbranding=1`;
+      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=0&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
+      iframe.title = `${p.brand} — ${p.title}`;
       iframe.allowFullscreen = true;
       iframe.allow = 'autoplay; fullscreen';
       wrap.appendChild(iframe);
@@ -473,8 +486,11 @@ function buildScrollDiv(idx) {
   return div;
 }
 
+let lastFocus = null;
+
 function openDetail(idx) {
   currentIdx = idx;
+  lastFocus = document.activeElement;
   const existingScroll = document.getElementById('detail-scroll');
   if (existingScroll) existingScroll.remove();
   const newScroll = buildScrollDiv(idx);
@@ -482,15 +498,38 @@ function openDetail(idx) {
   detailCanvas.appendChild(newScroll);
   document.getElementById('counter-current').textContent = idx + 1;
   overlay.classList.add('active');
+  overlay.setAttribute('aria-label', `${PROJECTS[idx].brand} — ${PROJECTS[idx].title}`);
+  overlay.inert = false;
+  document.getElementById('stage').inert = true;
+  document.querySelector('nav').inert = true;
   document.body.style.overflow = 'hidden';
+  document.getElementById('detail-back').focus({ preventScroll: true });
+}
+
+// Pausa los reproductores al instante y los elimina tras la transición,
+// para que el audio no siga sonando con el panel cerrado
+function pauseDetailVideos() {
+  overlay.querySelectorAll('iframe').forEach(f => {
+    const msg = f.src.includes('vimeo')
+      ? '{"method":"pause"}'
+      : '{"event":"command","func":"pauseVideo","args":""}';
+    try { f.contentWindow.postMessage(msg, '*'); } catch (_) {}
+  });
 }
 
 function closeDetail() {
+  if (!overlay.classList.contains('active')) return;
+  pauseDetailVideos();
   overlay.classList.remove('active');
+  overlay.inert = true;
+  document.getElementById('stage').inert = false;
+  document.querySelector('nav').inert = false;
   document.body.style.overflow = '';
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
   setTimeout(() => {
+    if (overlay.classList.contains('active')) return;
     const s = document.getElementById('detail-scroll');
-    if (s) s.scrollTop = 0;
+    if (s) { s.replaceChildren(); s.scrollTop = 0; }
   }, 800);
 }
 
@@ -534,37 +573,82 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft')  navigateTo((currentIdx - 1 + PROJECTS.length) % PROJECTS.length, 'prev');
 });
 document.querySelectorAll('.project-tile').forEach(tile => {
+  const p = PROJECTS[parseInt(tile.dataset.project)];
+  tile.setAttribute('role', 'button');
+  tile.setAttribute('tabindex', '0');
+  tile.setAttribute('aria-label', `${p.brand} — ${p.title}`);
   tile.addEventListener('click', () => openDetail(parseInt(tile.dataset.project)));
+  tile.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openDetail(parseInt(tile.dataset.project));
+    }
+  });
 });
 
-// Insertar iframes de vídeo en todos los tiles al cargar
-PROJECTS.forEach((p, idx) => {
-  const tile = document.querySelector(`.project-tile[data-project="${idx}"]`);
-  if (!tile) return;
+// Insertar los vídeos de los tiles solo cuando Work empieza a verse,
+// no al cargar la página
+let tileMediaMounted = false;
+function mountTileMedia() {
+  if (tileMediaMounted) return;
+  tileMediaMounted = true;
+  PROJECTS.forEach((p, idx) => {
+    const tile = document.querySelector(`.project-tile[data-project="${idx}"]`);
+    if (!tile) return;
 
-  let videoSrc = null;
-  if (p.type === 'vimeo' && p.videoUrl) {
-    videoSrc = p.videoUrl + (p.videoUrl.includes('?') ? '&' : '?') + 'autoplay=1&loop=1&muted=1&background=1';
-  } else if (p.type === 'youtube-multi') {
-    const ytId = p.videoIds[0];
-    videoSrc = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&rel=0&modestbranding=1&playsinline=1`;
-  }
+    if (p.type === 'vimeo' && p.videoUrl) {
+      const iframe = document.createElement('iframe');
+      iframe.className = 'tile-video';
+      iframe.src = p.videoUrl + (p.videoUrl.includes('?') ? '&' : '?') + 'autoplay=1&loop=1&muted=1&background=1';
+      iframe.allow = 'autoplay; fullscreen';
+      iframe.title = `${p.brand} — ${p.title}`;
+      iframe.tabIndex = -1;
+      iframe.setAttribute('aria-hidden', 'true');
+      iframe.setAttribute('frameborder', '0');
+      tile.insertBefore(iframe, tile.firstChild);
+    } else if (p.type === 'youtube-multi') {
+      // YouTube enseña su interfaz (play, título) mientras carga o si el
+      // autoplay falla: la miniatura lo tapa hasta que el vídeo ya suena
+      const ytId = p.videoIds[0];
+      const iframe = document.createElement('iframe');
+      iframe.className = 'tile-video';
+      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&enablejsapi=1`;
+      iframe.allow = 'autoplay; fullscreen';
+      iframe.title = `${p.brand} — ${p.title}`;
+      iframe.tabIndex = -1;
+      iframe.setAttribute('aria-hidden', 'true');
+      iframe.setAttribute('frameborder', '0');
 
-  if (videoSrc) {
-    const iframe = document.createElement('iframe');
-    iframe.className = 'tile-video';
-    iframe.src = videoSrc;
-    iframe.allow = 'autoplay; fullscreen';
-    iframe.setAttribute('frameborder', '0');
-    tile.insertBefore(iframe, tile.firstChild);
-  } else if (p.type === 'gif' && p.gifUrl) {
-    const img = document.createElement('img');
-    img.className = 'tile-gif';
-    img.src = p.gifUrl;
-    img.alt = `${p.brand} — ${p.title}`;
-    tile.insertBefore(img, tile.firstChild);
-  }
-});
+      const cover = document.createElement('img');
+      cover.className = 'tile-gif tile-cover';
+      cover.src = `https://i.ytimg.com/vi/${ytId}/maxresdefault.jpg`;
+      cover.alt = '';
+      cover.decoding = 'async';
+
+      // La API de YouTube avisa por postMessage del estado: 1 = reproduciendo
+      window.addEventListener('message', e => {
+        if (e.source !== iframe.contentWindow) return;
+        let data;
+        try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (_) { return; }
+        const state = data && data.info && data.info.playerState;
+        if (state === 1) cover.classList.add('hidden');
+      });
+      iframe.addEventListener('load', () => {
+        iframe.contentWindow.postMessage('{"event":"listening","id":1}', '*');
+      });
+
+      tile.insertBefore(cover, tile.firstChild);
+      tile.insertBefore(iframe, tile.firstChild);
+    } else if (p.type === 'gif' && p.gifUrl) {
+      const img = document.createElement('img');
+      img.className = 'tile-gif';
+      img.src = p.gifUrl;
+      img.alt = '';
+      img.decoding = 'async';
+      tile.insertBefore(img, tile.firstChild);
+    }
+  });
+}
 
 // ─── SCROLL SYSTEM ────────────────────────────────────────────────────────
 const heroInner   = document.getElementById('hero-inner');
@@ -589,10 +673,22 @@ function clamp(v, lo, hi) { return Math.min(Math.max(v, lo), hi); }
 
 let targetScroll = 0, currentScroll = 0;
 
+// Destino de un salto desde el nav. Mientras dura, el freno de scroll
+// de Work en móvil no actúa (si no, About y Contact rebotan a Work)
+let navTarget = null, navTimer = null;
+function endNavJump() {
+  if (navTarget !== null && navTarget > scrollUnit()) {
+    workEl.scrollTop = workEl.scrollHeight;
+  }
+  navTarget = null;
+  clearTimeout(navTimer);
+}
+
 window.addEventListener('scroll', () => {
   let sy = window.scrollY;
   const SU = scrollUnit();
-  if (window.innerWidth < 768 && sy > SU) {
+  if (navTarget !== null && Math.abs(sy - navTarget) < 2) endNavJump();
+  if (navTarget === null && window.innerWidth < 768 && sy > SU) {
     const workAtBottom = workEl.scrollTop >= workEl.scrollHeight - workEl.clientHeight - 10;
     if (!workAtBottom) {
       window.scrollTo({ top: SU, behavior: 'instant' });
@@ -639,7 +735,8 @@ function animate() {
   const aE = easeSection(aP);
   const cE = easeSection(cP);
 
-  if (window.innerWidth < 768 && wP < 0.05) workEl.scrollTop = 0;
+  if (window.innerWidth < 768 && wP < 0.05 && navTarget === null) workEl.scrollTop = 0;
+  if (wP > 0) mountTileMedia();
 
   workEl.style.transform     = `scale(${0.15 + wE * 0.85})`;
   workEl.style.opacity       = wP * Math.max(0, 1 - aP * 5);
@@ -658,6 +755,15 @@ function animate() {
   contactEl.style.transform     = `scale(${0.15 + cE * 0.85})`;
   contactEl.style.opacity       = cP;
   contactEl.style.pointerEvents = cP > 0.5 ? 'auto' : 'none';
+
+  // Los paneles invisibles quedan fuera del tabulador
+  setInert(workEl,    !(wP > 0.5 && aP < 0.1));
+  setInert(aboutEl,   !(aP > 0.5 && cP < 0.1));
+  setInert(contactEl, !(cP > 0.5));
+}
+
+function setInert(el, value) {
+  if (el.inert !== value) el.inert = value;
 }
 
 gsap.ticker.lagSmoothing(0);
@@ -709,7 +815,13 @@ document.querySelectorAll('nav a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
     const idx = sectionMap[link.getAttribute('href').slice(1)];
-    if (idx !== undefined) window.scrollTo({ top: idx * scrollUnit(), behavior: 'smooth' });
+    if (idx === undefined) return;
+    const top = idx * scrollUnit();
+    if (idx === 1) workEl.scrollTop = 0;
+    navTarget = top;
+    clearTimeout(navTimer);
+    navTimer = setTimeout(endNavJump, 3000);
+    window.scrollTo({ top, behavior: 'smooth' });
   });
 });
 
